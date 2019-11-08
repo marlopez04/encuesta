@@ -65,7 +65,7 @@
 
         <div class="carousel-inner" role="listbox">
             <!-- ngRepeat: pregunta in listaDePreguntas --><!-- ngIf: $index < 1 -->
-            <div class="item pregunta active ng-scope">
+            <div class="item pregunta active ng-scope col-md-12" style="padding-left: 50 !important;padding-right: 50 !important;">
                 <p class="ng-binding">{{$item->id}}- {{$item->contenido}}</p>
            @if($item->id == 54)
 

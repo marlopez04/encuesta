@@ -156,8 +156,10 @@ class ItemController extends Controller
         $resp = Respuesta::where('encuestado_id',$encuestado_id)
                            ->where('item_id',$id)->first();
 
-        $PregOpc = $resp->opcion_id;
-
+        if($resp <> null){
+            $PregOpc = $resp->opcion_id;
+        }
+        
         $encuestado = Encuestado::find($encuestado_id);
         //$encuestado->load('area','antiguedad','rangoedad','estudio','sede','sector','genero','contrato','puesto', 'respuestas', 'respuestasmultiples');
         $encuestado->load('respuestas', 'respuestasmultiples');
