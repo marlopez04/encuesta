@@ -91,9 +91,12 @@ class RespuestaMultipleController extends Controller
 
         //dd($contestadas);
 
+        $respondidas = Respuesta::where('encuestado_id',$encuestado_id)->count();
+
         //falta grabar una respuesta simple, para controlar que estan todas las respuestas contestadas
 
-        dd("grabado");
+        //dd($respondidas);
+        return response()->json($respondidas);
         
     }
 

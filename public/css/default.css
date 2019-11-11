@@ -71,11 +71,11 @@ footer
         margin-top: -20px;
     }
 
-    .pregunta
+    .pregunta2
     {
         font-family: 'Indie Flower', cursive;
-        padding-left: 50px;
-        padding-right: 50px;
+        padding-left: 150px;
+        padding-right: 150px;
         padding-top: 50px;
         padding-bottom: 50px;
         text-align: center;
@@ -83,7 +83,26 @@ footer
         /*height: 600px;*/
     }
 
+    .pregunta
+    {
+        font-family: 'Indie Flower', cursive;
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        text-align: center;
+        font-size: 50px;
+        /*height: 600px;*/
+    }
+
+
     .pregunta span
+    {
+        font-size: 24px;
+        color: #204d74;
+    }
+
+    .pregunta2 span
     {
         font-size: 24px;
         color: #204d74;
@@ -94,7 +113,17 @@ footer
         cursor: pointer;
     }
 
+    .pregunta2 span label
+    {
+        cursor: pointer;
+    }
+
     .pregunta textarea
+    {
+        font-size: 20px;
+    }
+
+    .pregunta2 textarea
     {
         font-size: 20px;
     }
@@ -117,6 +146,18 @@ footer
         font-family: 'Indie Flower', cursive;
         padding-left: 50px;
         padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        text-align: center;
+        font-size: 20px;
+        /*height: 800px;*/
+    }
+
+    .pregunta2
+    {
+        font-family: 'Indie Flower', cursive;
+        padding-left: 150px;
+        padding-right: 150px;
         padding-top: 50px;
         padding-bottom: 50px;
         text-align: center;

@@ -64,8 +64,6 @@ class ItemController extends Controller
         $PregOpc = 0;
         $contestadas = 0;
 
-        $contestadas = Respuesta::where('encuestado_id',$encuestado_id)->count();
-
         //dd($cantidad);
 
         //controlo si ya existe la respuesta y la actualizo
@@ -159,6 +157,8 @@ class ItemController extends Controller
         if($resp <> null){
             $PregOpc = $resp->opcion_id;
         }
+
+        $contestadas = Respuesta::where('encuestado_id',$encuestado_id)->count();
         
         $encuestado = Encuestado::find($encuestado_id);
         //$encuestado->load('area','antiguedad','rangoedad','estudio','sede','sector','genero','contrato','puesto', 'respuestas', 'respuestasmultiples');

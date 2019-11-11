@@ -65,11 +65,24 @@
 
         <div class="carousel-inner" role="listbox">
             <!-- ngRepeat: pregunta in listaDePreguntas --><!-- ngIf: $index < 1 -->
-            <div class="item pregunta active ng-scope col-md-12" style="padding-left: 50 !important;padding-right: 50 !important;">
+			@if($item->id == 54)
+				<div class="item pregunta2 active ng-scope col-md-12">
+			@else
+				<div class="item pregunta active ng-scope col-md-12">
+			@endif
+            
                 <p class="ng-binding">{{$item->id}}- {{$item->contenido}}</p>
            @if($item->id == 54)
 
+		   	<?php $tabla=0  ?>
+			<table>
+	
                 @foreach ($opciones as $opcion)
+
+					@if( $tabla ==0 )
+						<tr>
+					@endif
+				
 
                 	<?php $pintado=0  ?>
 
@@ -78,27 +91,46 @@
                 	@foreach($encuestado->respuestasmultiples as $respuesta) <!-- 2 -->
 
                   		@if($respuesta->opcion_id == $opcion->id)
+
+						  	<td style="padding: 10px;">
+
                     		<span onclick='pregunta(this)' data-p="{{$item->id}}" data-e="{{$encuestado->id}}" data-s="4" data-o="{{$opcion->id}}"  data-check="0" class="chekeado" style="color:rgb(255,189,117);">
                     		<input type="radio" value="0" checked="checked">
                     		<label class="ng-binding" >{{$opcion->opcion}}</label>
                     		</span>
                     		
                     		<?php $pintado=1  ?>
+
+							<?php $tabla = $tabla + 1 ?>
+							</td>
                   		@endif
 
                   	@endforeach
 
                   		@if($pintado == 0)
 
+						  	<td style="padding: 10px;">
+
                   			<span onclick='pregunta(this)' data-p="{{$item->id}}" data-e="{{$encuestado->id}}" data-check="0" data-s="4" data-o="{{$opcion->id}}" class="ng-scope">
                     		<input type="radio" value="5">
 		                    <label class="ng-binding">{{$opcion->opcion}}</label>
                     		</span>
+
+							</td>
+							<?php $tabla=$tabla + 1 ?>
           				@endif
 
           			@endif
 
+					  
+					  @if( $tabla ==3 )
+						<tr>
+						<?php $tabla=0  ?>
+					@endif
+
         		@endforeach
+				
+</table>
 
         	@else
 
@@ -207,6 +239,8 @@
 
 <script type="text/javascript">
 
+var contestadas = '{{ $contestadas }}';
+
 var aItems = [];
 
 var aItems2 = <?php echo $encuestado->respuestasmultiples ?>;
@@ -239,8 +273,6 @@ console.log(preg);
 
 function botonfinalizar(){
 
-
-	var contestadas = '{{ $contestadas }}';
 	console.log(contestadas);
 
 	if (contestadas == 54 && aItems.length == 10) {
@@ -320,8 +352,14 @@ function pregunta(objeto){
 			  	console.log(data);
 			  	data1 = {token: data}
 
-			  		$.post(url, data, function(){
+			  		$.post(url, data, function(respondidas){
 			  			  console.log("json ok");
+
+							console.log(respondidas);
+
+							contestadas = respondidas;
+
+							console.log(contestadas);
 			  		  
 			   		});
 

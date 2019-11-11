@@ -39,9 +39,9 @@ class EncuestadoController extends Controller
     {
         $encuestas = Encuesta::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
         $areas = Area::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
-        $antiguedades = Antiguedad::orderBy('rango', 'ASC')->lists('rango', 'id');
-        $rangoedades = RangoEdad::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
-        $estudios = Estudio::orderBy('nivel', 'ASC')->lists('nivel', 'id');
+        $antiguedades = Antiguedad::orderBy('id', 'ASC')->lists('rango', 'id');
+        $rangoedades = RangoEdad::orderBy('id', 'ASC')->lists('descripcion', 'id');
+        $estudios = Estudio::orderBy('id', 'ASC')->lists('nivel', 'id');
         $sedes = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
         $sectores = Sector::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
         $generos = Genero::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
