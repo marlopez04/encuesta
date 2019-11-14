@@ -239,6 +239,12 @@
 
 <script type="text/javascript">
 
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
 var contestadas = '{{ $contestadas }}';
 
 var aItems = [];
@@ -276,7 +282,7 @@ function botonfinalizar(){
 	console.log(contestadas);
 
 	if (contestadas == 54 && aItems.length == 10) {
-		alert("Encuesta finalizada con exito");
+		alert("¡Encuesta finalizada con éxito!");
 		window.location.replace('{{route("encuesta.encuestado.create")}}');
 	}else{
 		alert("debe contestar todas las preguntas");
@@ -350,7 +356,8 @@ function pregunta(objeto){
 			  	data = form.serialize();
 
 			  	console.log(data);
-			  	data1 = {token: data}
+
+			  	data1 = {token: data};
 
 			  		$.post(url, data, function(respondidas){
 			  			  console.log("json ok");

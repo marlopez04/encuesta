@@ -115,7 +115,10 @@ class RespuestaController extends Controller
         // $id2 respuesta para saber en que pregunta quedo
       
         $encuestado = Encuestado::find($id);
-        $encuestado->load('area','antiguedad','rangoedad','estudio','sede','sector','genero','contrato','puesto','respuestas','respuestasmultiples');
+        $encuestado->load('respuestas', 'respuestasmultiples');
+
+        //$respuestasmultiples = RespuestaMultiple::where('encuestado_id',$id)->where('item_id',$id2)->get();
+
         $item = Item::find($id2);
         $items = Item::all();
         $opt = $item->tipo_id;
