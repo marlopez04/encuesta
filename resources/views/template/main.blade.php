@@ -12,6 +12,8 @@
     <title>Encuesta</title>
       <link rel="icon" href="{{asset('images/favicon.png')}}">
 
+      @yield('head')
+
     <link href="{{asset('css/bootstrap.css')}}" rel="stylesheet">
     <link href="{{asset('css/bootstrap-theme.css')}}" rel="stylesheet">
     <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet">

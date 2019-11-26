@@ -23,12 +23,31 @@ Route::group(['prefix' => '/encuesta'], function(){
 	Route::resource('sector', 'SectorController');
 	Route::resource('item', 'ItemController');
 	Route::resource('respuesta', 'RespuestaController');
+
 	Route::get('respuesta/{id}/{id2}/', 'RespuestaController@respuesta');
 
 	Route::post('respuestamultiple','RespuestaMultipleController@store')->name('respuestamultiple');
 
+	Route::resource('estadistica', 'EstadisticaController');
 
+/*
+	Route::get('estadistica/sede',[
+		'uses' => 'EstadisticaController@sede',
+		'as'   => 'encuesta.estadistica.sede'
+	]);
+*/
 
+	
+
+});
+
+Route::group(['prefix' => '/estadistica'], function
+	(){
+
+		Route::resource('/', 'EstadisticaController');
+
+		Route::get('sede', 'EstadisticaController@sede');
+		Route::get('torta', 'EstadisticaController@torta');
 
 });
 

@@ -16,9 +16,11 @@
 			<h4>Area</h4>
 			{!! Form::select('area_id', $areas, null, [ 'class' => 'form-control select-category', 'id' => 'area' , 
 			'required']) !!}
-
+			
+			<h4>Sector</h4>
 			<div id= "sector">
-				
+			
+
 			</div>
 
 			<h4>Puesto</h4>
