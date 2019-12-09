@@ -272,64 +272,17 @@ class EstadisticaController extends Controller
     public function demografico()
     {
 
-        $variableDemog = 0;
         $titulo = 'Sede';
-        
-
-        if (isset($_GET['demografico'])) {
-            $variableDemog = $_GET['demografico'];
-            $titulo = $variableDemog;
-        }
-
+       
         //dd($titulo);
       
       //asignar a variable el tipo de peticion (ajax / ruta comun)
-
 
       $select = 'select sd.descripcion as descripcion, count(en.id) as cantidad ';
       $from = 'from encuestado en ';
       $join = 'inner join sede sd on sd.id = en.sede_id ';
       $group = 'group by sd.descripcion ';
       $order = 'order by sd.descripcion ';
-
-      switch ($titulo) {
-          case 'Sede':
-                $join = 'inner join sede sd on sd.id = en.sede_id ';
-              break;
-
-          case 'Antiguedad':
-                $join = 'inner join antiguedad sd on sd.id = en.antiguedad_id ';
-              break;
-
-          case 'Contrato':
-                $join = 'inner join contrato sd on sd.id = en.contrato_id ';
-              break;
-
-          case 'Estudio':
-                $join = 'inner join estudio sd on sd.id = en.estudio_id ';
-              break;
-
-          case 'Genero':
-                $join = 'inner join genero sd on sd.id = en.genero_id ';
-              break;
-
-          case 'Puesto':
-                $join = 'inner join puesto sd on sd.id = en.puesto_id ';
-              break;
-
-          case 'Edad':
-                $join = 'inner join rangoedad sd on sd.id = en.rangoedad_id ';
-              break;
-          case 'Sector':
-                $join = 'inner join sector sd on sd.id = en.sector_id ';
-              break;
-
-
-          default:
-              
-              break;
-      }
-
 
       $consulta = $select . $from . $join . $group . $order;
 
@@ -345,7 +298,6 @@ class EstadisticaController extends Controller
 
       //dd($datos);
 
-
       $demograficos = array('Sede' => 'Sede',
         'Antiguedad' => 'Antiguedad',
         'Contrato' => 'Contrato',
@@ -356,23 +308,6 @@ class EstadisticaController extends Controller
         'Sector' => 'Sector');
 
       //dd('titulo: '. $titulo . ', Variable: '. $variableDemog);
-      
-
-        if ($variableDemog <> 0) {
-
-            dd('ruta con opcion');
-
-            $titulo2 = $titulo;
-            $datos2 = $datos;
-
-            $html = view('encuesta.estadistica.injecciondemografico')
-                    ->with('titulo2',$titulo2)
-                    ->with('datos2',$datos2);
-
-            return $html;
-
-            
-        }else{
 
             //dd('ruta comun');
             //dd($datosO1);
@@ -382,8 +317,7 @@ class EstadisticaController extends Controller
                     ->with('titulo',$titulo)
                     ->with('datosO1',$datosO1)
                     ->with('datos',$datos);
-        }
-
+        
     }
 
     /**
