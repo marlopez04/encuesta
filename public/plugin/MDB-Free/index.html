@@ -25,9 +25,16 @@
       <h5 class="animated fadeIn mb-3">Thank you for using our product. We're glad you're with us.</h5>
       <p class="animated fadeIn text-muted">MDB Team</p>
       <br>
+
+      <h4>Barra para cemaforo</h4>
+<div class="progress">
+  <div class="progress-bar" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+  <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+  <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
       <br>
       <br>
-      <br>
+      <canvas id="canvas" width=512 height=512></canvas>
       <br>
       <br>
 
@@ -192,6 +199,63 @@ function drawWedge(startAngle, endAngle, fill, label) {
     }
 
 });
+
+
+window.onload=(function(){
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.lineWidth = 2;
+    ctx.font = '14px verdana';
+
+    var PI2 = Math.PI * 2;
+    var myColor = ["Green", "Red", "Blue"];
+    var myData = [30, 60, 10];
+    var cx = 150;
+    var cy = 150;
+    var radius = 100;
+
+    pieChart(myData, myColor);
+
+    function pieChart(data, colors) {
+      var total = 0;
+      for (var i = 0; i < data.length; i++) {
+        total += data[i];
+      }
+
+      var sweeps = []
+      for (var i = 0; i < data.length; i++) {
+        sweeps.push(data[i] / total * PI2);
+      }
+
+      var accumAngle = 0;
+      for (var i = 0; i < sweeps.length; i++) {
+        drawWedge(accumAngle, accumAngle + sweeps[i], colors[i], data[i]);
+        accumAngle += sweeps[i];
+      }
+    }
+
+    function drawWedge(startAngle, endAngle, fill, label) {
+      // draw the wedge
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, radius, startAngle, endAngle, false);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = 'black';
+      ctx.fill();
+      ctx.stroke();
+
+      // draw the label
+      var midAngle = startAngle + (endAngle - startAngle) / 2;
+      var labelRadius = radius * .65;
+      var x = cx + (labelRadius) * Math.cos(midAngle);
+      var y = cy + (labelRadius) * Math.sin(midAngle);
+      ctx.fillStyle = 'white';
+      ctx.fillText(label, x, y);
+    }
+
+}); // end $(function(){});
 
 
   </script>

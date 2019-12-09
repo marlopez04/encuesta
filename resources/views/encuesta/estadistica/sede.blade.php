@@ -16,6 +16,18 @@
 <div class="panel panel-widget">
 	<div class="panel-title">
 
+<div class="row">
+	<div class="col col-lg-1"></div>
+	<div class="col col-md-10">
+
+		<a class="btn" style="background-color:rgb(173,219,173);" href="{{ route('estadistica.sede')}}" role="button">Sede</a>
+		<a class="btn btn-success" href="{{ route('estadistica.demografico')}}" role="button">Demografico</a>
+
+		<br>
+	</div>
+
+</div>
+
 <div class="col col-lg-1"></div>
 	<div class="col col-lg-5">
 		<h4>General Cofaral</h4>

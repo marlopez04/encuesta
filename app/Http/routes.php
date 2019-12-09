@@ -45,8 +45,25 @@ Route::group(['prefix' => '/estadistica'], function
 	(){
 
 		Route::resource('/', 'EstadisticaController');
+		//Route::get('demografico', 'EstadisticaController@demografico');
 
-		Route::get('sede', 'EstadisticaController@sede');
+		Route::get('demografico',[
+		'uses' => 'EstadisticaController@demografico',
+		'as'   => 'estadistica.demografico'
+		]);
+
+		Route::get('injecciondemo',[
+		'uses' => 'EstadisticaController@injecciondemo',
+		'as'   => 'estadistica.injecciondemo'
+		]);
+
+		//Route::get('sede', 'EstadisticaController@sede');
+
+		Route::get('sede',[
+		'uses' => 'EstadisticaController@sede',
+		'as'   => 'estadistica.sede'
+		]);
+
 		Route::get('torta', 'EstadisticaController@torta');
 
 });
