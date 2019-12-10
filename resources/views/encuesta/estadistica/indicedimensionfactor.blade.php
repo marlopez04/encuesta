@@ -22,7 +22,8 @@
 
 		<a class="btn btn-success" href="{{ route('estadistica.sede')}}" role="button">Sede</a>
 		<a class="btn btn-success" href="{{ route('estadistica.demografico')}}" role="button">Demografico</a>
-		<a class="btn" style="background-color:rgb(173,219,173);" href="{{ route('estadistica.favorabilidaddemografico')}}" role="button">Favorabilidad Demografico</a>
+		<a class="btn btn-success" href="{{ route('estadistica.demografico')}}" role="button">Favorabilidad Demografico</a>
+		<a class="btn" style="background-color:rgb(173,219,173);" href="{{ route('estadistica.indicedimensionfactor')}}" role="button">Indice Dimension Factor</a>
 
 		<br>
 	</div>
@@ -85,7 +86,7 @@
 </div>
 </div>
 
-{!! Form::open(['route' => ['estadistica.injeccionfavorabilidaddemo'], 'method' => 'GET' , 'id' => 'form-demografico' ]) !!}
+{!! Form::open(['route' => ['estadistica.injeccionindicedimensionfactor'], 'method' => 'GET' , 'id' => 'form-demografico' ]) !!}
 {!! Form::close() !!}
 
 @endsection

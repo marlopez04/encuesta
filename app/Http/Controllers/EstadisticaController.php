@@ -16,6 +16,10 @@ use App\Genero;
 use App\Contrato;
 use App\Puesto;
 use App\Item;
+use App\Indice;
+use App\Dimension;
+use App\Factor;
+
 
 use App\Http\Requests;
 
@@ -583,6 +587,194 @@ class EstadisticaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    public function indicedimensionfactor()
+    {
+
+        $titulo = 'Indice';
+       
+        //dd($titulo);
+
+      $select = 'select fav.descripcion, fav.favorabilidad, fav.id, sum(fav.cantidad) as cantidad ';
+      $from = 'from (select sd.descripcion as descripcion, opc.puntaje, sd.id, count(r.id) as cantidad, case when (opc.puntaje < 3) then "Desfavorable" when (opc.puntaje = 3) then "Neutro" when (opc.puntaje > 3) then "Favorable" end as favorabilidad from respuesta r inner join encuestado en on en.id = r.encuestado_id inner join opcion opc on opc.id = r.opcion_id inner join items it on it.id = r.item_id inner join relation rl on rl.item_id = it.id ';
+      $join = 'inner join indice sd on sd.id = rl.indice_id ';
+      $group = 'group by sd.descripcion, opc.puntaje) fav group by fav.descripcion ,fav.favorabilidad order by fav.id';
+
+
+      $consulta = $select . $from . $join . $group;
+
+      //dd($consulta);
+
+      $consultadb = DB::select($consulta);
+
+      $datosO1 = $consultadb;
+
+      $demograficos = Indice::all();
+
+      //dd($demograficos);
+      
+      //dd($consultadb);
+
+      $demos= array();
+
+      foreach ($demograficos as $demografico) {
+        $total = 0;
+        foreach ($datosO1 as $dato) {
+            if ($dato->id == $demografico->id) {
+                $total += $dato->cantidad;
+            }
+        }
+
+        array_push($demos,$total);
+          
+      }
+
+      //dd($demos);
+
+      //dd($datosO1);
+
+      $datos = json_encode($consultadb);
+
+      $demosO1 = json_encode($demos);
+
+      //dd($datos);
+
+      $demograficos = array('Indice' => 'Indice',
+        'Dimension' => 'Dimension',
+        'Factor' => 'Factor');
+
+      //dd('titulo: '. $titulo . ', Variable: '. $variableDemog);
+
+            //dd('ruta comun');
+            //dd($datosO1);
+
+            return view('encuesta.estadistica.indicedimensionfactor')
+                    ->with('demograficos',$demograficos)
+                    ->with('titulo',$titulo)
+                    ->with('datosO1',$datosO1)
+                    ->with('demos',$demos)
+                    ->with('demosO1',$demosO1)                    
+                    ->with('datos',$datos);
+        
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
+    public function injeccionindicedimensionfactor()
+    {
+        $variableDemog = 0;
+        $titulo = 'Indice';
+
+        if (isset($_GET['demografico'])) {
+            $variableDemog = $_GET['demografico'];
+            $titulo = $variableDemog;
+        }
+
+        //dd($titulo);
+      
+      //asignar a variable el tipo de peticion (ajax / ruta comun)
+
+      $select = 'select fav.descripcion, fav.favorabilidad, fav.id, sum(fav.cantidad) as cantidad ';
+      $from = 'from (select sd.descripcion as descripcion, opc.puntaje, sd.id, count(r.id) as cantidad, case when (opc.puntaje < 3) then "Desfavorable" when (opc.puntaje = 3) then "Neutro" when (opc.puntaje > 3) then "Favorable" end as favorabilidad from respuesta r inner join encuestado en on en.id = r.encuestado_id inner join opcion opc on opc.id = r.opcion_id inner join items it on it.id = r.item_id inner join relation rl on rl.item_id = it.id ';
+      $join = 'inner join indice sd on sd.id = rl.indice_id ';
+      $group = 'group by sd.descripcion, opc.puntaje) fav group by fav.descripcion ,fav.favorabilidad order by fav.id';
+
+
+      switch ($titulo) {
+          case 'Indice':
+                $join = 'inner join indice sd on sd.id = rl.indice_id ';
+                $demograficos = Indice::all();
+              break;
+          case 'Dimension':
+                $join = 'inner join dimensions sd on sd.id = rl.dimension_id ';
+                $demograficos = Dimension::all();
+              break;
+
+          case 'Factor':
+                $join = 'inner join factors sd on sd.id = rl.factor_id ';
+                $demograficos = Factor::all();
+              break;
+
+          default:
+              
+              break;
+      }
+
+
+      $consulta = $select . $from . $join . $group;
+
+    //dd($consulta);
+
+      $consultadb = DB::select($consulta);
+
+      $datosO1 = $consultadb;
+
+      //dd($demograficos);
+
+      //dd($consulta);
+      
+      //dd($consultadb);
+
+      $demos= array();
+
+      foreach ($demograficos as $demografico) {
+        $total = 0;
+        foreach ($datosO1 as $dato) {
+            if ($dato->id == $demografico->id) {
+                $total += $dato->cantidad;
+            }
+        }
+
+        array_push($demos,$total);
+          
+      }
+
+      //dd($demos);
+
+      //dd($datosO1);
+
+      $datos = json_encode($consultadb);
+
+      $demosO1 = json_encode($demos);
+
+      $demograficos = array('Indice' => 'Indice',
+        'Dimension' => 'Dimension',
+        'Factor' => 'Factor');
+
+      //dd('titulo: '. $titulo . ', Variable: '. $variableDemog);
+
+            $titulo2 = $titulo;
+            $datos2 = $datos;
+            $demos2 = $demos;
+            $datosO2 = $datosO1;
+            $demosO2 = $demosO1;
+
+            //dd($datosO2);
+            //dd($datosO2);
+
+            $html = view('encuesta.estadistica.injeccionfavorabilidaddemo')
+                    ->with('titulo2',$titulo2)
+                    ->with('datos2',$datos2)
+                    ->with('datosO2',$datosO2)
+                    ->with('demos2',$demos2)
+                    ->with('demosO2',$demosO2);
+
+            return $html;
+
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
 
     public function store(Request $request)
     {

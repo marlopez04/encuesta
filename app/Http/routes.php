@@ -67,6 +67,16 @@ Route::group(['prefix' => '/estadistica'], function
 		'as'   => 'estadistica.injeccionfavorabilidaddemo'
 		]);
 
+		Route::get('indicedimensionfactor',[
+		'uses' => 'EstadisticaController@indicedimensionfactor',
+		'as'   => 'estadistica.indicedimensionfactor'
+		]);
+
+		Route::get('injeccionindicedimensionfactor',[
+		'uses' => 'EstadisticaController@injeccionindicedimensionfactor',
+		'as'   => 'estadistica.injeccionindicedimensionfactor'
+		]);
+
 		//Route::get('sede', 'EstadisticaController@sede');
 
 		Route::get('sede',[
