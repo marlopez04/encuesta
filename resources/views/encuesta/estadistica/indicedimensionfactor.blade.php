@@ -21,8 +21,8 @@
 	<div class="col col-md-10">
 
 		<a class="btn btn-success" href="{{ route('estadistica.sede')}}" role="button">Sede</a>
-		<a class="btn" style="background-color:rgb(173,219,173);" href="{{ route('estadistica.demografico')}}" role="button">Demografico</a>
-		<a class="btn btn-success" href="{{ route('estadistica.favorabilidaddemografico')}}" role="button">Favorabilidad Demografico</a>
+		<a class="btn btn-success" href="{{ route('estadistica.demografico')}}" role="button">Demografico</a>
+		<a class="btn" style="background-color:rgb(173,219,173);" href="{{ route('estadistica.favorabilidaddemografico')}}" role="button">Favorabilidad Demografico</a>
 
 		<br>
 	</div>
@@ -43,12 +43,6 @@
 <?php $item =0; ?>
 <?php $total =0; ?>
 
-@foreach ($datosO1 as $dato)
-
-	<?php $total += $dato->cantidad; ?>
-
-@endforeach
-
 <div class="row" id="sector1">
 <div class="col col-lg-1"></div>
 	<div class="col col-md-5">
@@ -65,13 +59,16 @@
 	<br>
 	@foreach ($datosO1 as $dato)
 
-<span>
-	<svg width="30" height="10">
-  <rect id="{{100 + $item}}" width="30" height="10" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)" />
-	</svg> {{ round(($dato->cantidad * 100) /$total,1) }}%  {{ $dato->descripcion }}</span>
-	<br>
+		@if ($dato->favorabilidad == "Favorable")
 
-	<?php $item++; ?>
+			<span>
+				<svg width="30" height="10">
+			  <rect id="{{100 + $item}}" width="30" height="10" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)" />
+				</svg> {{ round(($dato->cantidad * 100) /$demos[$item],1) }}%  {{ $dato->descripcion }}</span>
+				<br>
+
+				<?php $item++; ?>
+		@endif
 
 	@endforeach
 
@@ -88,7 +85,7 @@
 </div>
 </div>
 
-{!! Form::open(['route' => ['estadistica.injecciondemo'], 'method' => 'GET' , 'id' => 'form-demografico' ]) !!}
+{!! Form::open(['route' => ['estadistica.injeccionfavorabilidaddemo'], 'method' => 'GET' , 'id' => 'form-demografico' ]) !!}
 {!! Form::close() !!}
 
 @endsection
@@ -103,7 +100,6 @@
 
 //datos inicio
 
-var porcenTotal = 0;
 var desc = 0;
 var dat = 0;
 
@@ -119,47 +115,43 @@ var background = new Array();
 var border = new Array();
 
 var grafico = <?php echo $datos ?>;
+var demos = <?php echo $demosO1 ?>;
 
 if(grafico.length > 0){
 
-	porcenTotal = 0;
-
-	for (var i = grafico.length - 1; i >= 0; i--) {
-
-			if (i == grafico.length - 1 ){
-
-				porcenTotal = parseInt(grafico[i]['cantidad']);
-
-			}else{
-
-				porcenTotal =  porcenTotal  + parseInt(grafico[i]['cantidad']);
-			}
-			
-	}
-
-	console.log(porcenTotal);
-
 	var e = 0;
 
+	j = 0;
+
 	for (var i = 0; i < grafico.length; i++) {
+		
 
-			dat = (parseInt(grafico[i]['cantidad']) * 100) / porcenTotal;
+		if (grafico[i]['favorabilidad'] == "Favorable") {
 
-			//desc = grafico[i]['descripcion'] + ' ' + dat.toFixed(2) + '%' ;
+			dat = (parseInt(grafico[i]['cantidad']) * 100) / demos[j];
 
 			desc = dat.toFixed(1) + '%';
 
-			e = 100 + i;
+			e = 100 + j;
 
-			document.getElementById(e).style.fill = backgroundColor[i];
-			document.getElementById(e).style.stroke = borderColor[i];
+			document.getElementById(e).style.fill = backgroundColor[j];
+			document.getElementById(e).style.stroke = borderColor[j];
 
-			background.push(backgroundColor[i]);
-			border.push(borderColor[i]);
+			background.push(backgroundColor[j]);
+			border.push(borderColor[j]);
 	
 			descripcion.push(desc);
 
 			datos.push(dat.toFixed(1));
+
+			j = j + 1;
+
+			console.log(j);
+			console.log(e);
+			console.log(i);
+			console.log(grafico[i]['favorabilidad']);
+
+		}
 
 	}
 
@@ -170,6 +162,7 @@ if(grafico.length > 0){
 		//descripcion.push(' ');
 
 		datos.push(100);
+	
 
 
 }

@@ -191,6 +191,10 @@ class EstadisticaController extends Controller
                 $join = 'inner join contrato sd on sd.id = en.contrato_id ';
               break;
 
+          case 'Area':
+                $join = 'inner join area sd on sd.id = en.area_id ';
+              break;
+
           case 'Estudio':
                 $select = 'select sd.nivel as descripcion, count(en.id) as cantidad ';
                 $join = 'inner join estudio sd on sd.id = en.estudio_id ';
@@ -236,6 +240,7 @@ class EstadisticaController extends Controller
 
       $demograficos = array('Sede' => 'Sede',
         'Antiguedad' => 'Antiguedad',
+        'Area' => 'Area',
         'Contrato' => 'Contrato',
         'Estudio' => 'Estudio',
         'Genero' => 'Genero',
@@ -300,6 +305,7 @@ class EstadisticaController extends Controller
 
       $demograficos = array('Sede' => 'Sede',
         'Antiguedad' => 'Antiguedad',
+        'Area' => 'Area',
         'Contrato' => 'Contrato',
         'Estudio' => 'Estudio',
         'Genero' => 'Genero',
@@ -326,6 +332,258 @@ class EstadisticaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    public function favorabilidaddemografico()
+    {
+
+        $titulo = 'Sede';
+       
+        //dd($titulo);
+      
+      //asignar a variable el tipo de peticion (ajax / ruta comun)
+
+
+      $select = 'select fav.descripcion, fav.favorabilidad, fav.id, sum(fav.cantidad) as cantidad';
+      $from = ' from (select sd.descripcion as descripcion, opc.puntaje, sd.id, count(r.id) as cantidad, case when (opc.puntaje < 3) then "Desfavorable" when (opc.puntaje = 3) then "Neutro" when (opc.puntaje > 3) then "Favorable" end as favorabilidad from respuesta r inner join encuestado en on en.id = r.encuestado_id inner join opcion opc on opc.id = r.opcion_id';
+      $join = ' inner join sede sd on sd.id = en.sede_id';
+      $where = ' where not r.item_id = 54';
+      $group =' group By sd.descripcion, opc.puntaje ) fav group by fav.descripcion, fav.favorabilidad';
+      $order = ' order by fav.id ';
+
+
+      $consulta = $select . $from . $join . $where . $group . $order;
+
+      //dd($consulta);
+
+      $consultadb = DB::select($consulta);
+
+      $datosO1 = $consultadb;
+
+      $demograficos = Sede::all();
+
+      //dd($demograficos);
+      
+      //dd($consultadb);
+
+      $demos= array();
+
+      foreach ($demograficos as $demografico) {
+        $total = 0;
+        foreach ($datosO1 as $dato) {
+            if ($dato->id == $demografico->id) {
+                $total += $dato->cantidad;
+            }
+        }
+
+        array_push($demos,$total);
+          
+      }
+
+      //dd($demos);
+
+      //dd($datosO1);
+
+      $datos = json_encode($consultadb);
+
+      $demosO1 = json_encode($demos);
+
+      //dd($datos);
+
+      $demograficos = array('Sede' => 'Sede',
+        'Antiguedad' => 'Antiguedad',
+        'Area' => 'Area',
+        'Contrato' => 'Contrato',
+        'Estudio' => 'Estudio',
+        'Genero' => 'Genero',
+        'Puesto' => 'Puesto',
+        'Edad' => 'Edad',
+        'Sector' => 'Sector');
+
+      //dd('titulo: '. $titulo . ', Variable: '. $variableDemog);
+
+            //dd('ruta comun');
+            //dd($datosO1);
+
+            return view('encuesta.estadistica.favorabilidaddemografica')
+                    ->with('demograficos',$demograficos)
+                    ->with('titulo',$titulo)
+                    ->with('datosO1',$datosO1)
+                    ->with('demos',$demos)
+                    ->with('demosO1',$demosO1)                    
+                    ->with('datos',$datos);
+        
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
+    public function injeccionfavorabilidaddemo()
+    {
+        $variableDemog = 0;
+        $titulo = 'Sede';
+
+        if (isset($_GET['demografico'])) {
+            $variableDemog = $_GET['demografico'];
+            $titulo = $variableDemog;
+        }
+
+        //dd($titulo);
+      
+      //asignar a variable el tipo de peticion (ajax / ruta comun)
+
+
+      $select = 'select fav.descripcion, fav.favorabilidad, fav.id, sum(fav.cantidad) as cantidad ';
+      $from = ' from (';
+      $select2 = 'select sd.descripcion as descripcion ,';
+      $from2 = 'opc.puntaje, sd.id, count(r.id) as cantidad, case when (opc.puntaje < 3) then "Desfavorable" when (opc.puntaje = 3) then "Neutro" when (opc.puntaje > 3) then "Favorable" end as favorabilidad from respuesta r inner join encuestado en on en.id = r.encuestado_id inner join opcion opc on opc.id = r.opcion_id ';
+      $join = ' inner join sede sd on sd.id = en.sede_id';
+      $where = ' where not r.item_id = 54';
+      $group =' group By sd.descripcion,';
+      $group2 = ' opc.puntaje ) fav group by fav.descripcion ,fav.favorabilidad';
+      $order = ' order by fav.id ';
+
+
+      switch ($titulo) {
+          case 'Sede':
+                $join = 'inner join sede sd on sd.id = en.sede_id ';
+                $demograficos = Sede::all();
+              break;
+
+          case 'Antiguedad':
+                $select2 = 'select sd.rango as descripcion ,';
+                $join = 'inner join antiguedad sd on sd.id = en.antiguedad_id ';
+                $group = 'group by sd.rango, ';
+                      $demograficos = Antiguedad::all();
+              break;
+
+          case 'Area':
+                $join = 'inner join area sd on sd.id = en.area_id ';
+                $demograficos = Area::all();
+              break;
+
+          case 'Contrato':
+                $join = 'inner join contrato sd on sd.id = en.contrato_id ';
+                $demograficos = Contrato::all();
+              break;
+
+          case 'Estudio':
+                $select2 = 'select sd.nivel as descripcion ,';
+                $join = 'inner join estudio sd on sd.id = en.estudio_id ';
+                $group = 'group by sd.nivel, ';
+                $demograficos = Estudio::all();
+              break;
+
+          case 'Genero':
+                $join = 'inner join genero sd on sd.id = en.genero_id ';
+                $demograficos = Genero::all();
+              break;
+
+          case 'Puesto':
+                $join = 'inner join puesto sd on sd.id = en.puesto_id ';
+                $demograficos = Puesto::all();
+              break;
+
+          case 'Edad':
+                $join = 'inner join rangoedad sd on sd.id = en.rangoedad_id ';
+                $demograficos = RangoEdad::all();
+              break;
+          case 'Sector':
+                $join = 'inner join sector sd on sd.id = en.sector_id ';
+                $demograficos = Sector::all();
+              break;
+
+          default:
+              
+              break;
+      }
+
+
+      $consulta = $select . $from . $select2 . $from2 . $join . $group . $group2 . $order;
+
+    //dd($consulta);
+
+      $consultadb = DB::select($consulta);
+
+      $datosO1 = $consultadb;
+
+
+      //dd($demograficos);
+
+      //dd($consulta);
+      
+      //dd($consultadb);
+
+      $demos= array();
+
+      foreach ($demograficos as $demografico) {
+        $total = 0;
+        foreach ($datosO1 as $dato) {
+            if ($dato->id == $demografico->id) {
+                $total += $dato->cantidad;
+            }
+        }
+
+        array_push($demos,$total);
+          
+      }
+
+      //dd($demos);
+
+      //dd($datosO1);
+
+      $datos = json_encode($consultadb);
+
+      $demosO1 = json_encode($demos);
+
+//nuevo codigo <-------------------------
+
+      $demograficos = array('Sede' => 'Sede',
+        'Antiguedad' => 'Antiguedad',
+        'Area' => 'Area',
+        'Contrato' => 'Contrato',
+        'Estudio' => 'Estudio',
+        'Genero' => 'Genero',
+        'Puesto' => 'Puesto',
+        'Edad' => 'Edad',
+        'Sector' => 'Sector');
+
+      //dd('titulo: '. $titulo . ', Variable: '. $variableDemog);
+
+            $titulo2 = $titulo;
+            $datos2 = $datos;
+            $demos2 = $demos;
+            $datosO2 = $datosO1;
+            $demosO2 = $demosO1;
+
+
+
+            //dd($datosO2);
+            //dd($datosO2);
+
+
+            $html = view('encuesta.estadistica.injeccionfavorabilidaddemo')
+                    ->with('titulo2',$titulo2)
+                    ->with('datos2',$datos2)
+                    ->with('datosO2',$datosO2)
+                    ->with('demos2',$demos2)
+                    ->with('demosO2',$demosO2);
+
+            return $html;
+
+
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
     public function store(Request $request)
     {
         //

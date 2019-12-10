@@ -57,6 +57,16 @@ Route::group(['prefix' => '/estadistica'], function
 		'as'   => 'estadistica.injecciondemo'
 		]);
 
+		Route::get('favorabilidaddemografico',[
+		'uses' => 'EstadisticaController@favorabilidaddemografico',
+		'as'   => 'estadistica.favorabilidaddemografico'
+		]);
+
+		Route::get('injeccionfavorabilidaddemo',[
+		'uses' => 'EstadisticaController@injeccionfavorabilidaddemo',
+		'as'   => 'estadistica.injeccionfavorabilidaddemo'
+		]);
+
 		//Route::get('sede', 'EstadisticaController@sede');
 
 		Route::get('sede',[
