@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
 
-    protected $table = "item";
+    protected $table = "items";
     protected $fillable = ['contenido','valoracion_negativa', 'tipo_id','encuesta_id', 'opciones_codigo'];
 
 
