@@ -19,6 +19,7 @@ use App\Item;
 use App\Indice;
 use App\Dimension;
 use App\Factor;
+use App\Opcion;
 
 
 use App\Http\Requests;
@@ -101,6 +102,9 @@ class EstadisticaController extends Controller
      */
     public function sede()
     {
+        //variable para definir que boton del menu esta
+        //seleccionado
+        $menuitem = 0;
 
 //todas las sedes separadas
         $sedefavorb = DB::select('select fav.sed, fav.favorabilidad, fav.id, sum(fav.cantidad) as cantidad from ( select sd.descripcion as sed, opc.puntaje, sd.id, count(r.id) as cantidad, case when (opc.puntaje < 3) then "Desfavorable" when (opc.puntaje = 3) then "Neutro" when (opc.puntaje > 3) then "Favorable" end as favorabilidad from respuesta r inner join encuestado en on en.id = r.encuestado_id inner join opcion opc on opc.id = r.opcion_id inner join sede sd on sd.id = en.sede_id where not r.item_id = 54 group By sd.descripcion, opc.puntaje ) fav group by fav.sed, fav.favorabilidad');
@@ -136,11 +140,13 @@ class EstadisticaController extends Controller
         //dd($sedefavorbs);
        
         return view('encuesta.estadistica.sede')
+            ->with('menuitem',$menuitem)
             ->with('sedetotal',$sedetotal)
             ->with('sedetucuman',$sedetucuman)
             ->with('sedesalta',$sedesalta)
             ->with('sedechaco',$sedechaco)
             ->with('sedefavorbs',$sedefavorbs);
+
     }
 
     /**
@@ -281,6 +287,8 @@ class EstadisticaController extends Controller
     public function demografico()
     {
 
+        $menuitem = 1;
+        
         $titulo = 'Sede';
        
         //dd($titulo);
@@ -323,10 +331,13 @@ class EstadisticaController extends Controller
             //dd($datosO1);
 
             return view('encuesta.estadistica.demografico')
+                    ->with('menuitem',$menuitem)
                     ->with('demograficos',$demograficos)
                     ->with('titulo',$titulo)
                     ->with('datosO1',$datosO1)
                     ->with('datos',$datos);
+
+                    
         
     }
 
@@ -339,6 +350,8 @@ class EstadisticaController extends Controller
 
     public function favorabilidaddemografico()
     {
+
+            $menuitem = 2;
 
         $titulo = 'Sede';
        
@@ -409,13 +422,13 @@ class EstadisticaController extends Controller
             //dd($datosO1);
 
             return view('encuesta.estadistica.favorabilidaddemografica')
+                    ->with('menuitem',$menuitem)
                     ->with('demograficos',$demograficos)
                     ->with('titulo',$titulo)
                     ->with('datosO1',$datosO1)
                     ->with('demos',$demos)
-                    ->with('demosO1',$demosO1)                    
+                    ->with('demosO1',$demosO1)
                     ->with('datos',$datos);
-        
     }
 
     /**
@@ -591,6 +604,8 @@ class EstadisticaController extends Controller
     public function indicedimensionfactor()
     {
 
+        $menuitem = 3;
+        
         $titulo = 'Indice';
        
         //dd($titulo);
@@ -598,10 +613,12 @@ class EstadisticaController extends Controller
       $select = 'select fav.descripcion, fav.favorabilidad, fav.id, sum(fav.cantidad) as cantidad ';
       $from = 'from (select sd.descripcion as descripcion, opc.puntaje, sd.id, count(r.id) as cantidad, case when (opc.puntaje < 3) then "Desfavorable" when (opc.puntaje = 3) then "Neutro" when (opc.puntaje > 3) then "Favorable" end as favorabilidad from respuesta r inner join encuestado en on en.id = r.encuestado_id inner join opcion opc on opc.id = r.opcion_id inner join items it on it.id = r.item_id inner join relation rl on rl.item_id = it.id ';
       $join = 'inner join indice sd on sd.id = rl.indice_id ';
-      $group = 'group by sd.descripcion, opc.puntaje) fav group by fav.descripcion ,fav.favorabilidad order by fav.id';
+        //quito la pregunta 54 por que es la pregunta multiple
+      $where = ' where not r.item_id = 54';
+      $group = ' group by sd.descripcion, opc.puntaje) fav group by fav.descripcion ,fav.favorabilidad order by fav.id';
 
 
-      $consulta = $select . $from . $join . $group;
+      $consulta = $select . $from . $join . $where . $group;
 
       //dd($consulta);
 
@@ -649,13 +666,14 @@ class EstadisticaController extends Controller
             //dd($datosO1);
 
             return view('encuesta.estadistica.indicedimensionfactor')
+                    ->with('menuitem',$menuitem)
                     ->with('demograficos',$demograficos)
                     ->with('titulo',$titulo)
                     ->with('datosO1',$datosO1)
                     ->with('demos',$demos)
-                    ->with('demosO1',$demosO1)                    
+                    ->with('demosO1',$demosO1)
                     ->with('datos',$datos);
-        
+       
     }
 
     /**
@@ -775,6 +793,212 @@ class EstadisticaController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function multiple()
+    {
+
+        $menuitem = 4;
+
+        $titulo = 'Indice';
+       
+        //dd($titulo);
+
+        $select = 'select opc.opcion as descripcion, opc.id as id, count(r.id) as cantidad';
+        $from = ' from respuestamultiple r';
+        $join = ' inner join opcion opc on opc.id = r.opcion_id inner join encuestado en on en.id = r.encuestado_id';
+        $join2 = ' inner join sede dm on dm.id = en.sede_id';
+        $where = ' where r.item_id = 54';
+        $where2 = ' and dm.id = 1';
+        $group = ' group by opc.id, opc.opcion';
+        $order = ' order by cantidad desc';
+
+
+      $consulta = $select . $from . $join . $join2 . $where . $where2. $group . $order;
+
+      //dd($consulta);
+
+      $consultadb = DB::select($consulta);
+
+      $datosO1 = $consultadb;
+
+      //dd($datosO1);
+
+      $datos = json_encode($consultadb);
+
+      $total = Encuestado::where('sede_id', 1)->count();
+
+
+      $demograficos = array('Sede' => 'Sede',
+        'Antiguedad' => 'Antiguedad',
+        'Area' => 'Area',
+        'Contrato' => 'Contrato',
+        'Estudio' => 'Estudio',
+        'Genero' => 'Genero',
+        'Puesto' => 'Puesto',
+        'Edad' => 'Edad',
+        'Sector' => 'Sector');
+
+      $demograficos2 = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+
+      //dd('titulo: '. $titulo . ', Variable: '. $variableDemog);
+
+            //dd('ruta comun');
+            //dd($datosO1);
+
+            return view('encuesta.estadistica.multiple')
+                    ->with('menuitem',$menuitem)
+                    ->with('demograficos',$demograficos)
+                    ->with('demograficos2',$demograficos2)
+                    ->with('titulo',$titulo)
+                    ->with('total',$total)
+                    ->with('datosO1',$datosO1)
+                    ->with('datos',$datos);
+            
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
+    public function injeccionmultiple()
+    {
+
+        $menuitem = 4;
+
+        $titulo = 'Indice';
+
+        if (isset($_GET['demografico'])) {
+            $variableDemog = $_GET['demografico'];
+            $demoId = $_GET['demografico2'];
+            $titulo = $variableDemog;
+        }else{
+            return "demografico vino vacio";
+        }
+       
+        //dd($titulo);
+
+        //consulta para los datos
+
+        $select = 'select opc.opcion as descripcion, opc.id as id, count(r.id) as cantidad';
+        $from = ' from respuestamultiple r';
+        $join = ' inner join opcion opc on opc.id = r.opcion_id inner join encuestado en on en.id = r.encuestado_id';
+        $join2 = ' inner join sede dm on dm.id = dm.opcion_id';
+        $where = ' where item_id = 54';
+        $where2 = ' and dm.id = 1';
+        $group = ' group by opc.id, opc.opcion';
+        $order = ' order by cantidad desc';
+
+      switch ($titulo) {
+          case 'Sede':
+                $join2 = ' inner join sede dm on dm.id = en.sede_id';
+                $where2 = ' and dm.id = ' . $demoId;
+                $total = Encuestado::where('sede_id', $demoId)->count();
+              break;
+
+          case 'Antiguedad':
+                $join2 = ' inner join antiguedad dm on dm.id = en.antiguedad_id';
+                $where2 = ' and dm.id = ' . $demoId;
+                $total = Encuestado::where('antiguedad_id', $demoId)->count();
+              break;
+
+          case 'Area':
+                $join2 = ' inner join area dm on dm.id = en.area_id';
+                $where2 = ' and dm.id = ' . $demoId;
+                $total = Encuestado::where('area_id', $demoId)->count();
+              break;
+
+          case 'Contrato':
+                $join2 = ' inner join contrato dm on dm.id = en.contrato_id';
+                $where2 = ' and dm.id = ' . $demoId;
+                $total = Encuestado::where('contrato_id', $demoId)->count();
+              break;
+
+          case 'Estudio':
+                $join2 = ' inner join estudio dm on dm.id = en.estudio_id';
+                $where2 = ' and dm.id = ' . $demoId;
+                $total = Encuestado::where('estudio_id', $demoId)->count();
+              break;
+
+          case 'Genero':
+                $join2 = ' inner join genero dm on dm.id = en.genero_id';
+                $where2 = ' and dm.id = ' . $demoId;
+                $total = Encuestado::where('genero_id', $demoId)->count();
+              break;
+
+          case 'Puesto':
+                $join2 = ' inner join puesto dm on dm.id = en.puesto_id';
+                $where2 = ' and dm.id = ' . $demoId;
+                $total = Encuestado::where('puesto_id', $demoId)->count();
+              break;
+
+          case 'Edad':
+                $join2 = ' inner join rangoedad dm on dm.id = en.rangoedad_id';
+                $where2 = ' and dm.id = ' . $demoId;
+                $total = Encuestado::where('rangoedad_id', $demoId)->count();
+              break;
+          case 'Sector':
+                $join2 = ' inner join sector dm on dm.id = en.sector_id';
+                $where2 = ' and dm.id = ' . $demoId;
+                $total = Encuestado::where('sector_id', $demoId)->count();
+              break;
+
+          default:
+              
+              break;
+      }
+
+
+      $consulta = $select . $from . $join . $join2 . $where . $where2. $group . $order;
+
+      //dd($consulta);
+
+      $consultadb = DB::select($consulta);
+
+
+      $datosO1 = $consultadb;
+
+
+      $datos = json_encode($consultadb);
+
+      $demograficos = array('Sede' => 'Sede',
+        'Antiguedad' => 'Antiguedad',
+        'Area' => 'Area',
+        'Contrato' => 'Contrato',
+        'Estudio' => 'Estudio',
+        'Genero' => 'Genero',
+        'Puesto' => 'Puesto',
+        'Edad' => 'Edad',
+        'Sector' => 'Sector');
+
+      $demograficos2 = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+
+      $titulo2 = $titulo;
+      $datos2 = $datos;
+      $datosO2 = $datosO1;
+      $total2 = $total;
+
+      //dd($total);
+
+
+
+    
+        return view('encuesta.estadistica.injeccionmultiple')
+                    ->with('titulo2',$titulo2)
+                    ->with('datos2',$datos2)
+                    ->with('total2',$total2)
+                    ->with('datosO2',$datosO2);
+            
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
 
     public function store(Request $request)
     {
@@ -821,6 +1045,73 @@ class EstadisticaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    public function demogshow()
+    {
+
+        if (isset($_GET['demografico'])) {
+            $variableDemog = $_GET['demografico'];
+            //$demogId = $_GET['demografico2'];
+            $titulo = $variableDemog;
+        }else{
+            return "demografico vino vacio";
+        }
+
+
+      switch ($titulo) {
+          case 'Sede':
+                $demograficos2 = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+              break;
+
+          case 'Antiguedad':
+                $demograficos2 = Antiguedad::orderBy('rango', 'ASC')->lists('rango', 'id');
+              break;
+
+          case 'Area':
+                $demograficos2 = Area::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+              break;
+
+          case 'Contrato':
+                $demograficos2 = Contrato::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+              break;
+
+          case 'Estudio':
+                $demograficos2 = Estudio::orderBy('nivel', 'ASC')->lists('nivel', 'id');
+              break;
+
+          case 'Genero':
+                $demograficos2 = Genero::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+              break;
+
+          case 'Puesto':
+                $demograficos2 = Puesto::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+              break;
+
+          case 'Edad':
+                $demograficos2 = RangoEdad::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+              break;
+          case 'Sector':
+                $demograficos2 = Sector::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+              break;
+
+          default:
+              
+              break;
+      }
+
+        $html = view('encuesta.estadistica.lista')
+                       ->with('demograficos2', $demograficos2);
+
+        return $html;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
     public function destroy($id)
     {
         //

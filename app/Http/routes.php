@@ -77,6 +77,16 @@ Route::group(['prefix' => '/estadistica'], function
 		'as'   => 'estadistica.injeccionindicedimensionfactor'
 		]);
 
+		Route::get('multiple',[
+		'uses' => 'EstadisticaController@multiple',
+		'as'   => 'estadistica.multiple'
+		]);
+
+		Route::get('injeccionmultiple',[
+		'uses' => 'EstadisticaController@injeccionmultiple',
+		'as'   => 'estadistica.injeccionmultiple'
+		]);
+
 		//Route::get('sede', 'EstadisticaController@sede');
 
 		Route::get('sede',[
@@ -85,6 +95,11 @@ Route::group(['prefix' => '/estadistica'], function
 		]);
 
 		Route::get('torta', 'EstadisticaController@torta');
+
+		Route::get('demogshow',[
+		'uses' => 'EstadisticaController@demogshow',
+		'as'   => 'estadistica.demogshow'
+		]);
 
 });
 
