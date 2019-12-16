@@ -1,6 +1,6 @@
-<?php $descripcion = array('sede', 'participacion x demog', 'favorabilidad demografico','indice dimension factor', 'respuesta multiple'); ?>
+<?php $descripcion = array('sede', 'participacion x demog', 'favorabilidad demografico','indice dimension factor', 'respuesta multiple','preguntas'); ?>
 
-<?php $direccion = array(route('estadistica.sede'),route('estadistica.demografico'),route('estadistica.favorabilidaddemografico'),route('estadistica.indicedimensionfactor'),route('estadistica.multiple')); ?>
+<?php $direccion = array(route('estadistica.sede'),route('estadistica.demografico'),route('estadistica.favorabilidaddemografico'),route('estadistica.indicedimensionfactor'),route('estadistica.multiple'), route('estadistica.preguntas')); ?>
 
 
 <?php $i = 0; ?>

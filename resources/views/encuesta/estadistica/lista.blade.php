@@ -1,9 +1,27 @@
 
-{!! Form::select('demografico3', $demograficos2, 'Sede', ['id' => 'demografico3', 'class' => 'form-control select-category', 'required']) !!}
+
+@if ($funcion == "multiple")
+    
+
+    	{!! Form::select('demografico3', $demograficos2, 'Sede', ['id' => 'demografico3', 'class' => 'form-control select-category', 'required']) !!}
+    	{!! Form::close() !!}
+
+		{!! Form::open(['route' => ['estadistica.injeccionmultiple'], 'method' => 'GET' , 'id' => 'form-demografico3' ]) !!}
+		{!! Form::close() !!}
+        
+
+@elseif ($funcion == "preguntas")
+
+    	{!! Form::select('demografico3', $demograficos2, 'Sede', ['id' => 'demografico3', 'class' => 'form-control select-category', 'required']) !!}
+    	
+
+		{!! Form::open(['route' => ['estadistica.injeccionpreguntas'], 'method' => 'GET' , 'id' => 'form-demografico3' ]) !!}
+		{!! Form::close() !!}
+
+@endif
 
 
-{!! Form::open(['route' => ['estadistica.injeccionmultiple'], 'method' => 'GET' , 'id' => 'form-demografico3' ]) !!}
-{!! Form::close() !!}
+
 
 
 <script type="text/javascript">

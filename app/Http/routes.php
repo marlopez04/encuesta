@@ -87,6 +87,16 @@ Route::group(['prefix' => '/estadistica'], function
 		'as'   => 'estadistica.injeccionmultiple'
 		]);
 
+		Route::get('preguntas',[
+		'uses' => 'EstadisticaController@preguntas',
+		'as'   => 'estadistica.preguntas'
+		]);
+
+		Route::get('injeccionpreguntas',[
+		'uses' => 'EstadisticaController@injeccionpreguntas',
+		'as'   => 'estadistica.injeccionpreguntas'
+		]);
+
 		//Route::get('sede', 'EstadisticaController@sede');
 
 		Route::get('sede',[

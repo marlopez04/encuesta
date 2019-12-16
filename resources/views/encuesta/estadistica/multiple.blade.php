@@ -202,8 +202,9 @@ beginAtZero: true
 	  var form = $('#form-demografico');
 
 	  var url = form.attr('action');
+	  var funcion = "multiple";
 
-		data = {demografico: demografico};
+		data = {demografico: demografico, funcion: funcion};
 	  $.get(url, data, function(listasector){
 	  		  console.log("json ok");
 		      $('#demog2').show().fadeOut().html(listasector).fadeIn();
