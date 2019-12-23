@@ -24,20 +24,7 @@
 
 </div>
 
-
-
-<div class="row">
-<div class="col col-lg-1"></div>
-<div class="col col-lg-5">
-	<br>
-	{!! Form::select('demografico', $demograficos, 'Sede', ['id' => 'demografico', 'class' => 'form-control select-category', 'required']) !!}
-	<div id="demog1">
-		{!! Form::select('demografico', $demograficos2, 'Sede', ['id' => 'demografico2', 'class' => 'form-control select-category', 'required']) !!}
-	</div>
-	<div id="demog2"></div>
-</div>
-<div class="col col-lg-4"></div>
-</div>
+@include('encuesta.estadistica.demogfiltrouno')
 
 <?php $item =0; ?>
 
@@ -83,12 +70,6 @@
 </div>
 </div>
 
-{!! Form::open(['route' => ['estadistica.demogshow'], 'method' => 'GET' , 'id' => 'form-demografico' ]) !!}
-{!! Form::close() !!}
-
-
-{!! Form::open(['route' => ['estadistica.injeccionmultiple'], 'method' => 'GET' , 'id' => 'form-demografico2' ]) !!}
-{!! Form::close() !!}
 
 @endsection
 
@@ -192,48 +173,6 @@ beginAtZero: true
 }
 }
 );
-
-//funcion para cargar el lisdato del demografico
-
-	$('#demografico').change(function(){
-		
-		var demografico = $('#demografico').val();
-		
-	  var form = $('#form-demografico');
-
-	  var url = form.attr('action');
-	  var funcion = "multiple";
-
-		data = {demografico: demografico, funcion: funcion};
-	  $.get(url, data, function(listasector){
-	  		  console.log("json ok");
-		      $('#demog2').show().fadeOut().html(listasector).fadeIn();
-		      $('#demog1').hide();
-	   });
-
-	});
-
-//funcion para cargar el grafico
-
-	$('#demografico2').change(function(){
-		
-		var demografico = $('#demografico').val();
-		var demografico2 = $('#demografico2').val();
-		
-	  var form = $('#form-demografico2');
-
-	  var url = form.attr('action');
-
-		data = {demografico: demografico, demografico2: demografico2};
-	  $.get(url, data, function(listasector){
-	  		  console.log("json ok");
-		      $('#sector2').show().fadeOut().html(listasector).fadeIn();
-		      $('#sector1').hide();
-	   });
-
-	});
-
-
 
 </script>
 

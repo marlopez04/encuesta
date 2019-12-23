@@ -11,6 +11,7 @@
 <div class="col-md-5">
 	<h4>{{$titulo2}}</h4>
 	<canvas id="Grafico2" style="max-width: 500px;"></canvas>
+	<canvas id="Grafico3" style="width: 500px; height: 600px"></canvas>
 </div>
 
 <div class="col-md-6">
@@ -116,28 +117,64 @@ console.log(border);
 
 	//GRAFICO INICIO
 
-var ctx2 = document.getElementById("Grafico2").getContext('2d');
-var myChart = new Chart(ctx2, {
-type: 'bar',
-data: {
-labels: descripcion,
-datasets: [{
-label: ' ',
-data: datos,
-backgroundColor: background,
-borderColor: border,
-borderWidth: 1
-}]
-},
-options: {
-scales: {
-yAxes: [{
-ticks: {
-beginAtZero: true
+if(datos.length > 7){
+
+	console.log("horizontal");
+	var ctx3 = document.getElementById("Grafico3").getContext('2d');
+	var myChart = new Chart(ctx3, {
+	type: 'horizontalBar',
+	data: {
+	labels: descripcion,
+	datasets: [{
+	label: ' ',
+	data: datos,
+	fill: false,
+	backgroundColor: background,
+	borderColor: border,
+	borderWidth: 1
+	}]
+	},
+	options: {
+	responsive: false,
+	scales: {
+	xAxes: [{
+	ticks: {
+	beginAtZero: true
+	}
+	}]
+	}
+	}
+	}
+	);
+
+	$('#Grafico2').hide();
+
+}else{
+
+	var ctx2 = document.getElementById("Grafico2").getContext('2d');
+	var myChart = new Chart(ctx2, {
+	type: 'bar',
+	data: {
+	labels: descripcion,
+	datasets: [{
+	label: ' ',
+	data: datos,
+	backgroundColor: background,
+	borderColor: border,
+	borderWidth: 1
+	}]
+	},
+	options: {
+	scales: {
+	yAxes: [{
+	ticks: {
+	beginAtZero: true
+	}
+	}]
+	}
+	}
+	});
+
 }
-}]
-}
-}
-});
 
 </script>

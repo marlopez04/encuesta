@@ -3,7 +3,7 @@
 @if ($funcion == "multiple")
     
 
-    	{!! Form::select('demografico3', $demograficos2, 'Sede', ['id' => 'demografico3', 'class' => 'form-control select-category', 'required']) !!}
+    	{!! Form::select('demografico3', $demog3, 'Sede', ['id' => 'demografico3', 'class' => 'form-control select-category', 'required']) !!}
     	{!! Form::close() !!}
 
 		{!! Form::open(['route' => ['estadistica.injeccionmultiple'], 'method' => 'GET' , 'id' => 'form-demografico3' ]) !!}
@@ -12,7 +12,15 @@
 
 @elseif ($funcion == "preguntas")
 
-    	{!! Form::select('demografico3', $demograficos2, 'Sede', ['id' => 'demografico3', 'class' => 'form-control select-category', 'required']) !!}
+    	{!! Form::select('demografico3', $demog3, 'Sede', ['id' => 'demografico3', 'class' => 'form-control select-category', 'required']) !!}
+    	
+
+		{!! Form::open(['route' => ['estadistica.injeccionpreguntas'], 'method' => 'GET' , 'id' => 'form-demografico3' ]) !!}
+		{!! Form::close() !!}
+
+@elseif ($funcion == "indice")
+
+    	{!! Form::select('demog3', $demog3, 'Sede', ['id' => 'demografico3', 'class' => 'form-control select-category', 'required']) !!}
     	
 
 		{!! Form::open(['route' => ['estadistica.injeccionpreguntas'], 'method' => 'GET' , 'id' => 'form-demografico3' ]) !!}

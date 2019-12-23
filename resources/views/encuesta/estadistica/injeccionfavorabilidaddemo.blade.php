@@ -10,31 +10,36 @@
 <div class="col col-lg-1"></div>
 <div class="col-md-5">
 	<h4>{{$titulo2}}</h4>
+	<div class="grafico">
 	<canvas id="Grafico2" style="max-width: 500px;"></canvas>
+	<canvas id="Grafico3" style="width: 500px; height: 600px"></canvas>
+	</div>
+	<div class="nografico" hidden="true">
+		<h4>Encuestados insuficientes para graficar</h4>
+	</div>
 </div>
 
 <div class="col-md-6">
+	<div class="grafico">
 	<br>
 	<br>
-	@foreach ($datosO2 as $dato)
+	@foreach ($ArrayOrdenID2 as $dato)
 
-		@if ($dato->favorabilidad == "Favorable")
+				@if ($dato->favorabilidad == "Favorable" && $dato->porcentage > 0 )
 
-			@if($demos2[$item] > 0)
+					<span>
+						<svg width="30" height="10">
+					  <rect id="{{$item}}" width="30" height="10" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)" />
+						</svg> {{ $dato->porcentage }}%  {{ $dato->descripcion }}</span>
+						<br>
 
-				<span>
-					<svg width="30" height="10">
-				  <rect id={{$item}} width="30" height="10" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)" />
-					</svg> {{ round(($dato->cantidad * 100) /$demos2[$item],1) }}%  {{ $dato->descripcion }}</span>
-					<br>
+						<?php $item++; ?>
 
-			@endif
+				@endif
 
-				<?php $item++; ?>
-		@endif
-
+		
 	@endforeach
-
+	</div>
 </div>
 
 
@@ -56,50 +61,50 @@ var datos = new Array();
 var background = new Array();
 var border = new Array();
 
-var grafico = <?php echo $datos2 ?>;
-var demos = <?php echo $demosO2 ?>;
+var porcentage = <?php echo $porcentages2 ?>;
 
-if(grafico.length > 0){
+if(porcentage.length > 0){
 
 	var e = 0;
 
 	j = 0;
 
-	//for (var i = grafico.length - 1; i >= 0; i--) {
-	for (var i = 0; i < grafico.length; i++) {
-
-			dat = (parseInt(grafico[i]['cantidad']) * 100) / porcenTotal;
+	for (var i = 0; i < porcentage.length; i++) {
 
 
-		if (grafico[i]['favorabilidad'] == "Favorable") {
+		if (parseInt(porcentage[i]) > 0) {
 
-			if (demos[j] > 0) {
+			dat = parseInt(porcentage[i]);
 
-				dat = (parseInt(grafico[i]['cantidad']) * 100) / demos[j];
+			console.log(dat);
 
-				desc = dat.toFixed(1) + '%';
+			desc = parseInt(porcentage[i]) + '%';
 
-				document.getElementById(j).style.fill = backgroundColor[j];
-				document.getElementById(j).style.stroke = borderColor[j];
+			console.log(desc);
 
-				background.push(backgroundColor[j]);
-				border.push(borderColor[j]);
+			e = j;
+
+			document.getElementById(e).style.fill = backgroundColor[j];
+			document.getElementById(e).style.stroke = borderColor[j];
+
+			background.push(backgroundColor[j]);
+			border.push(borderColor[j]);
 	
-				descripcion.push(desc);
+			descripcion.push(desc);
 
-				datos.push(dat.toFixed(1));
-
-			}
+			datos.push(dat);
 
 			j = j + 1;
 
-			console.log(j);
-			console.log(e);
-			console.log(i);
-			console.log(grafico[i]['favorabilidad']);
-		}
+			//console.log(j);
+			//console.log(e);
+			//console.log(i);
+			//console.log(grafico[i]['favorabilidad']);
+		}		
 
 	}
+
+
 		background.push("rgba(255, 99, 132, 0)");
 		border.push("rgba(255, 99, 132, 0)");
 	
@@ -110,34 +115,84 @@ if(grafico.length > 0){
 }
 
 
-console.log(background);
-console.log(border);
+//console.log(background);
+//console.log(border);
 
-
+//console.log("cantidad de datos");
+//console.log(grafico.length);
 	//GRAFICO INICIO
 
-var ctx2 = document.getElementById("Grafico2").getContext('2d');
-var myChart = new Chart(ctx2, {
-type: 'bar',
-data: {
-labels: descripcion,
-datasets: [{
-label: ' ',
-data: datos,
-backgroundColor: background,
-borderColor: border,
-borderWidth: 1
-}]
-},
-options: {
-scales: {
-yAxes: [{
-ticks: {
-beginAtZero: true
+var encuestados = <?php echo $encuestados ?>;
+
+console.log("encuestados: " + encuestados);
+
+if (encuestados > 2) {
+
+if(datos.length > 7){
+
+	console.log("horizontal");
+	var ctx3 = document.getElementById("Grafico3").getContext('2d');
+	var myChart = new Chart(ctx3, {
+	type: 'horizontalBar',
+	data: {
+	labels: descripcion,
+	datasets: [{
+	label: ' ',
+	data: datos,
+	fill: false,
+	backgroundColor: background,
+	borderColor: border,
+	borderWidth: 1
+	}]
+	},
+	options: {
+	responsive: false,
+	scales: {
+	xAxes: [{
+	ticks: {
+	beginAtZero: true
+	}
+	}]
+	}
+	}
+	}
+	);
+
+	$('#Grafico2').hide();
+
+}else{
+
+	var ctx2 = document.getElementById("Grafico2").getContext('2d');
+	var myChart = new Chart(ctx2, {
+	type: 'bar',
+	data: {
+	labels: descripcion,
+	datasets: [{
+	label: ' ',
+	data: datos,
+	backgroundColor: background,
+	borderColor: border,
+	borderWidth: 1
+	}]
+	},
+	options: {
+	scales: {
+	yAxes: [{
+	ticks: {
+	beginAtZero: true
+	}
+	}]
+	}
+	}
+	});
+
 }
-}]
+
+}else{
+
+	$('.grafico').hide();
+	$('.nografico').show();
+
 }
-}
-});
 
 </script>

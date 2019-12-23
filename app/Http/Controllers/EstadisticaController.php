@@ -20,6 +20,8 @@ use App\Indice;
 use App\Dimension;
 use App\Factor;
 use App\Opcion;
+use App\ObjetoOrden;
+use App\ObjetoOrdenDos;
 
 
 use App\Http\Requests;
@@ -33,6 +35,8 @@ class EstadisticaController extends Controller
      */
     public function index()
     {
+
+      return redirect()->route('estadistica.sede');
 
         $respuestas = DB::table('respuesta')
             ->select('respuesta.item_id', 'opcion.puntaje', DB::raw('count(respuesta.id)'))
@@ -183,7 +187,7 @@ class EstadisticaController extends Controller
       $from = 'from encuestado en ';
       $join = 'inner join sede sd on sd.id = en.sede_id ';
       $group = 'group by sd.descripcion ';
-      $order = 'order by sd.descripcion ';
+      $order = 'order by sd.id ';
 
       switch ($titulo) {
           case 'Sede':
@@ -194,7 +198,7 @@ class EstadisticaController extends Controller
                 $select = 'select sd.rango as descripcion, count(en.id) as cantidad ';
                 $join = 'inner join antiguedad sd on sd.id = en.antiguedad_id ';
                 $group = 'group by sd.rango ';
-                $order = 'order by sd.rango ';
+                
               break;
 
           case 'Contrato':
@@ -209,7 +213,7 @@ class EstadisticaController extends Controller
                 $select = 'select sd.nivel as descripcion, count(en.id) as cantidad ';
                 $join = 'inner join estudio sd on sd.id = en.estudio_id ';
                 $group = 'group by sd.nivel ';
-                $order = 'order by sd.nivel ';
+                
               break;
 
           case 'Genero':
@@ -299,7 +303,7 @@ class EstadisticaController extends Controller
       $from = 'from encuestado en ';
       $join = 'inner join sede sd on sd.id = en.sede_id ';
       $group = 'group by sd.descripcion ';
-      $order = 'order by sd.descripcion ';
+      $order = 'order by sd.id ';
 
       $consulta = $select . $from . $join . $group . $order;
 
@@ -351,7 +355,7 @@ class EstadisticaController extends Controller
     public function favorabilidaddemografico()
     {
 
-            $menuitem = 2;
+        $menuitem = 2;
 
         $titulo = 'Sede';
        
@@ -376,6 +380,8 @@ class EstadisticaController extends Controller
 
       $datosO1 = $consultadb;
 
+      //dd($datosO1);
+
       $demograficos = Sede::all();
 
       //dd($demograficos);
@@ -384,6 +390,7 @@ class EstadisticaController extends Controller
 
       $demos= array();
 
+      //foreach ($demograficos as $demografico) {
       foreach ($demograficos as $demografico) {
         $total = 0;
         foreach ($datosO1 as $dato) {
@@ -395,6 +402,121 @@ class EstadisticaController extends Controller
         array_push($demos,$total);
           
       }
+
+//<<<<<<<<<<<<<<<<<<< orden de mayor a menor por % INICIO
+
+      //ordenado de datos prueba 2 ordenar el objeto
+
+      //objeto temporar para array
+      
+      //array de objetos con porcentajes 
+      $porcentualOrdenado = array();
+
+      $item = 0;
+
+      foreach ($demograficos as $demografico) {
+
+        foreach ($datosO1 as $dato){
+
+          if ($dato->id == $demografico->id) {
+
+            $datosOrdenados = new ObjetoOrden();
+
+            //calculo el porcentaje de cada uno
+            
+            $porcentage = round(($dato->cantidad * 100) / $demos[$item],1);
+
+            $datosOrdenados->id = $dato->id;
+            $datosOrdenados->descripcion = $dato->descripcion;
+            $datosOrdenados->favorabilidad = $dato->favorabilidad;
+            $datosOrdenados->cantidad = $dato->cantidad;
+            $datosOrdenados->porcentage = $porcentage;
+
+            //lo guardo en un objeto y le hago un push al array de objeto
+
+            array_push($porcentualOrdenado,$datosOrdenados);
+
+          }
+
+        }
+        $item++;
+      }
+
+      //dd($porcentualOrdenado);
+
+      //ahora debo extraer todos los datos favorables, y de no teneer, debo insertar un registro con el id y favorabilidad = 0
+
+      //$variableDOrden = new ObjetoOrden();
+
+      //array de objetos con porcentajes 
+
+      $IdOrdenados = array();
+
+      //recorro demografico y porcentajeOrdenado para armar un arreglo solo de favorables por cada demografico para poder ordenarlo a posterior
+      foreach ($demograficos as $demografico) {
+        $total = 0;
+        foreach ($porcentualOrdenado as $orden) {
+            
+            if ($demografico->id == $orden->id) {
+              $variableDOrden = new ObjetoOrden();
+              $variableDemog = $orden;
+
+              if ($orden->favorabilidad == "Favorable" && $total == 0) {
+                $total = $orden->porcentage;
+
+              }
+            }
+
+        }
+
+        if ($total == 0) {
+
+          $variableDemog->porcentage = 0;
+          $variableDemog->favorabilidad = "Favorable";
+
+          array_push($IdOrdenados,$variableDemog);
+        }else{
+
+          $variableDemog->porcentage = $total;
+          $variableDemog->favorabilidad = "Favorable";
+
+          array_push($IdOrdenados,$variableDemog);
+        }
+      }
+       
+      //dd($IdOrdenados);
+
+      //$IdOrdenados->asort();
+      
+      //de los favorables con porcentaje ordeno por % de mayor a menor
+
+      $ArrayOrdenID = collect($IdOrdenados)->sortByDesc('porcentage')->all();
+
+      //dd($ArrayOrdenID);      
+
+//armos estos dos array que son los que van a dar datos al grafico INICIO
+
+      $porcentages00= array();
+      foreach ($ArrayOrdenID as $orden) {
+        array_push($porcentages00,$orden->porcentage);
+      }
+
+      $porcentages = json_encode($porcentages00);
+
+      //dd($porcentages);
+
+      $descripcion00 = array();
+      foreach ($ArrayOrdenID as $orden) {
+        array_push($descripcion00,$orden->descripcion);
+      }
+
+      $descripcion = json_encode($descripcion00);
+
+      //dd($descripcion);
+
+//armos estos dos array que son los que van a dar datos al grafico FIN
+
+//<<<<<<<<<<<<<<<<<<< orden de mayor a menor por % FIN
 
       //dd($demos);
 
@@ -416,6 +538,8 @@ class EstadisticaController extends Controller
         'Edad' => 'Edad',
         'Sector' => 'Sector');
 
+      $demograficos2 = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+
       //dd('titulo: '. $titulo . ', Variable: '. $variableDemog);
 
             //dd('ruta comun');
@@ -423,12 +547,18 @@ class EstadisticaController extends Controller
 
             return view('encuesta.estadistica.favorabilidaddemografica')
                     ->with('menuitem',$menuitem)
+                    ->with('ArrayOrdenID',$ArrayOrdenID)
                     ->with('demograficos',$demograficos)
-                    ->with('titulo',$titulo)
+                    ->with('demograficos2',$demograficos2)
+                    ->with('porcentages',$porcentages)
+                    ->with('descripcion',$descripcion)
+                    ->with('titulo',$titulo);
+                    /*
                     ->with('datosO1',$datosO1)
                     ->with('demos',$demos)
                     ->with('demosO1',$demosO1)
                     ->with('datos',$datos);
+                    */
     }
 
     /**
@@ -443,10 +573,37 @@ class EstadisticaController extends Controller
         $variableDemog = 0;
         $titulo = 'Sede';
 
-        if (isset($_GET['demografico'])) {
-            $variableDemog = $_GET['demografico'];
+        $primario = array();
+        $secundario = array();
+
+        if (isset($_GET['demografico1'])) {
+            $variableDemog = $_GET['demografico1'];
             $titulo = $variableDemog;
+
+            //traigo los filtros secundarios
+            $demog1 = $_GET['demografico1'];
+            $demog3 = $_GET['demografico3'];
+            $demog4 = $_GET['demografico4'];
+            $demog6 = $_GET['demografico6'];
+
+            //los cargo en un arreglo
+            if ($demog3 != "todos") {
+              array_push($primario,$demog1);
+              array_push($secundario,$demog3);
+            }
+            
+            //controlo que los demograficos 1 y 4 sean distintos
+
+            if ($demog1 != $demog4 && $demog6 != "todos"){
+              array_push($primario,$demog4);
+              array_push($secundario,$demog6);
+            }
+              
         }
+
+        //$demoss = $demog1 . ' ' . $demog3 . ' ' . $demog4 . ' ' . $demog6;
+
+        //dd($demoss);
 
         //dd($titulo);
       
@@ -460,7 +617,7 @@ class EstadisticaController extends Controller
       $join = ' inner join sede sd on sd.id = en.sede_id';
       $where = ' where not r.item_id = 54';
       $group =' group By sd.descripcion,';
-      $group2 = ' opc.puntaje ) fav group by fav.descripcion ,fav.favorabilidad';
+      $group2 = ' opc.puntaje ) fav group by fav.descripcion ,fav.favorabilidad ';
       $order = ' order by fav.id ';
 
 
@@ -473,7 +630,7 @@ class EstadisticaController extends Controller
           case 'Antiguedad':
                 $select2 = 'select sd.rango as descripcion ,';
                 $join = 'inner join antiguedad sd on sd.id = en.antiguedad_id ';
-                $group = 'group by sd.rango, ';
+                $group = ' group by sd.rango, ';
                       $demograficos = Antiguedad::all();
               break;
 
@@ -490,7 +647,7 @@ class EstadisticaController extends Controller
           case 'Estudio':
                 $select2 = 'select sd.nivel as descripcion ,';
                 $join = 'inner join estudio sd on sd.id = en.estudio_id ';
-                $group = 'group by sd.nivel, ';
+                $group = ' group by sd.nivel, ';
                 $demograficos = Estudio::all();
               break;
 
@@ -519,7 +676,127 @@ class EstadisticaController extends Controller
       }
 
 
-      $consulta = $select . $from . $select2 . $from2 . $join . $group . $group2 . $order;
+$max =sizeof($primario);
+
+$join2 = ' ';
+$where2 = ' ';
+
+$countwhere = 0;
+
+for ($i=0; $i < $max; $i++) { 
+
+      // filtro secundario que solo agrega filtros
+      switch ($primario[$i]) {
+          case 'Sede':
+                $join2 = $join2 .' inner join sede filt'.$i.' on filt'.$i.'.id = en.sede_id ';
+                if ($countwhere > 0) {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Antiguedad':
+                $join2 = $join2 .' inner join antiguedad filt'.$i.' on filt'.$i.'.id = en.antiguedad_id ';
+                if ($countwhere > 0) {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Area':
+                $join2 = $join2 .' inner join area filt'.$i.' on filt'.$i.'.id = en.area_id ';
+                if ($countwhere > 0) {
+                  $where2 = $where2 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Contrato':
+                $join2 = $join2 .' inner join contrato filt'.$i.' on filt'.$i.'.id = en.contrato_id ';
+                if ($countwhere > 0) {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Estudio':
+                $join2 = $join2 .' inner join estudio filt'.$i.' on filt'.$i.'.id = en.estudio_id ';
+                if ($countwhere > 0) {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Genero':
+                $join2 = $join2 .' inner join genero filt'.$i.' on filt'.$i.'.id = en.genero_id ';
+                if ($countwhere > 0) {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Puesto':
+                $join2 = $join2 .' inner join puesto filt'.$i.' on filt'.$i.'.id = en.puesto_id ';
+                if ($countwhere > 0) {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Edad':
+                $join2 = $join2 .' inner join rangoedad filt'.$i.' on filt'.$i.'.id = en.rangoedad_id ';
+                if ($countwhere > 0) {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+          case 'Sector':
+                $join2 = $join2 .' inner join sector filt'.$i.' on filt'.$i.'.id = en.sector_id ';
+                if ($countwhere > 0) {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          default:
+              
+              break;
+      }
+
+  
+}
+
+
+
+
+      $consulta = $select . $from . $select2 . $from2 . $join . $join2 . $where . $where2 . $group .  $group2 . $order;
 
     //dd($consulta);
 
@@ -527,6 +804,7 @@ class EstadisticaController extends Controller
 
       $datosO1 = $consultadb;
 
+      //dd($datosO1);
 
       //dd($demograficos);
 
@@ -550,11 +828,85 @@ class EstadisticaController extends Controller
 
       //dd($demos);
 
+      //dd($demograficos);
+
+      //dd($datosO1);
+
+//nuevo orden INICIO
+
+      $ArrayOrdenID = $this->ordenar($demograficos,$demos, $datosO1, $titulo);
+
+      //dd($ArrayOrdenID);
+
+//armos estos dos array que son los que van a dar datos al grafico INICIO
+
+      $porcentages00= array();
+      foreach ($ArrayOrdenID as $orden) {
+        array_push($porcentages00,$orden->porcentage);
+      }
+
+      $porcentages = json_encode($porcentages00);
+
+      //dd($porcentages);
+
+      $descripcion00 = array();
+      foreach ($ArrayOrdenID as $orden) {
+        array_push($descripcion00,$orden->descripcion);
+      }
+
+      $descripcion = json_encode($descripcion00);
+
+      //dd($descripcion);
+
+//armos estos dos array que son los que van a dar datos al grafico FIN
+
+//nuevo orden FIN
+
+      //dd($demos);
+
       //dd($datosO1);
 
       $datos = json_encode($consultadb);
 
       $demosO1 = json_encode($demos);
+
+
+//correccion de total inicio
+
+
+      $select2 = 'select count(en.id) as id from encuestado en ';
+
+      //declaro un where4 que no filtra nada, para poder concatenar where2 y where3 sin problemas
+      $where4 = ' where not en.id = 0';
+
+      if ($demog3 == 'todos') {
+          //no debe filtrar por el primario
+
+        if ($demog6 == 'todos') {
+          //no debe ablicar filtros
+          $consulta2 = $select2 ;
+          
+        }else{
+          $consulta2 = $select2 . $join2 . $where4 . $where2;
+
+        }
+        
+      }else{
+        $consulta2 = $select2 . $join2 . $where4 . $where2;
+      }
+
+      //$consulta2 = $select . $join2 . $join3 . $where4 . $where2 . $where3;
+
+      //dd($consulta2);
+
+      $consultadb2 = DB::select($consulta2);
+
+      //dd("valor que trae: " . $consultadb2[0]->id);
+
+      $encuestados = $consultadb2[0]->id;
+
+//correccion de total fin
+
 
 //nuevo codigo <-------------------------
 
@@ -576,6 +928,12 @@ class EstadisticaController extends Controller
             $datosO2 = $datosO1;
             $demosO2 = $demosO1;
 
+            $ArrayOrdenID2 = $ArrayOrdenID;
+            $porcentages2 = $porcentages;
+            $descripcion2 = $descripcion;
+
+            //dd($ArrayOrdenID2);
+
 
 
             //dd($datosO2);
@@ -584,6 +942,10 @@ class EstadisticaController extends Controller
 
             $html = view('encuesta.estadistica.injeccionfavorabilidaddemo')
                     ->with('titulo2',$titulo2)
+                    ->with('encuestados',$encuestados)
+                    ->with('ArrayOrdenID2',$ArrayOrdenID2)
+                    ->with('porcentages2',$porcentages2)
+                    ->with('descripcion2',$descripcion2)
                     ->with('datos2',$datos2)
                     ->with('datosO2',$datosO2)
                     ->with('demos2',$demos2)
@@ -646,6 +1008,38 @@ class EstadisticaController extends Controller
           
       }
 
+
+//nuevo orden INICIO
+
+      $ArrayOrdenID = $this->ordenar($demograficos,$demos, $datosO1, $titulo);
+
+      //dd($ArrayOrdenID);
+
+//armos estos dos array que son los que van a dar datos al grafico INICIO
+
+      $porcentages00= array();
+      foreach ($ArrayOrdenID as $orden) {
+        array_push($porcentages00,$orden->porcentage);
+      }
+
+      $porcentages = json_encode($porcentages00);
+
+      //dd($porcentages);
+
+      $descripcion00 = array();
+      foreach ($ArrayOrdenID as $orden) {
+        array_push($descripcion00,$orden->descripcion);
+      }
+
+      $descripcion = json_encode($descripcion00);
+
+      //dd($descripcion);
+
+//armos estos dos array que son los que van a dar datos al grafico FIN
+
+//nuevo orden FIN
+
+
       //dd($demos);
 
       //dd($datosO1);
@@ -656,9 +1050,21 @@ class EstadisticaController extends Controller
 
       //dd($datos);
 
-      $demograficos = array('Indice' => 'Indice',
+      $indicadores = array('Indice' => 'Indice',
         'Dimension' => 'Dimension',
         'Factor' => 'Factor');
+
+      $demograficos = array('Sede' => 'Sede',
+        'Antiguedad' => 'Antiguedad',
+        'Area' => 'Area',
+        'Contrato' => 'Contrato',
+        'Estudio' => 'Estudio',
+        'Genero' => 'Genero',
+        'Puesto' => 'Puesto',
+        'Edad' => 'Edad',
+        'Sector' => 'Sector');
+
+      $demograficos2 = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
 
       //dd('titulo: '. $titulo . ', Variable: '. $variableDemog);
 
@@ -667,8 +1073,13 @@ class EstadisticaController extends Controller
 
             return view('encuesta.estadistica.indicedimensionfactor')
                     ->with('menuitem',$menuitem)
+                    ->with('indicadores',$indicadores)
                     ->with('demograficos',$demograficos)
+                    ->with('demograficos2',$demograficos2)
                     ->with('titulo',$titulo)
+                    ->with('ArrayOrdenID',$ArrayOrdenID)
+                    ->with('porcentages',$porcentages)
+                    ->with('descripcion',$descripcion)
                     ->with('datosO1',$datosO1)
                     ->with('demos',$demos)
                     ->with('demosO1',$demosO1)
@@ -688,10 +1099,41 @@ class EstadisticaController extends Controller
         $variableDemog = 0;
         $titulo = 'Indice';
 
-        if (isset($_GET['demografico'])) {
-            $variableDemog = $_GET['demografico'];
+        $primario = array();
+        $secundario = array();
+
+        if (isset($_GET['indicador'])) {
+            $variableDemog = $_GET['indicador'];
             $titulo = $variableDemog;
+            $indicador = $_GET['indicador'];
+
+            //traigo los filtros secundarios
+            $demog1 = $_GET['demografico1'];
+            $demog3 = $_GET['demografico3'];
+            $demog4 = $_GET['demografico4'];
+            $demog6 = $_GET['demografico6'];
+
+            //los cargo en un arreglo
+            if ($demog3 != "todos") {
+
+              array_push($primario,$demog1);
+              array_push($secundario,$demog3);
+            }
+            
+
+            //controlo que los demograficos 1 y 4 sean distintos
+
+            if ($demog1 != $demog4 && $demog6 != "todos"){
+              array_push($primario,$demog4);
+              array_push($secundario,$demog6);
+              
+            }
+
         }
+
+        //$demoss = $demog1 . ' ' . $demog3 . ' ' . $demog4 . ' ' . $demog6 . ' '. $indicador;
+
+        //dd($demoss);
 
         //dd($titulo);
       
@@ -700,21 +1142,24 @@ class EstadisticaController extends Controller
       $select = 'select fav.descripcion, fav.favorabilidad, fav.id, sum(fav.cantidad) as cantidad ';
       $from = 'from (select sd.descripcion as descripcion, opc.puntaje, sd.id, count(r.id) as cantidad, case when (opc.puntaje < 3) then "Desfavorable" when (opc.puntaje = 3) then "Neutro" when (opc.puntaje > 3) then "Favorable" end as favorabilidad from respuesta r inner join encuestado en on en.id = r.encuestado_id inner join opcion opc on opc.id = r.opcion_id inner join items it on it.id = r.item_id inner join relation rl on rl.item_id = it.id ';
       $join = 'inner join indice sd on sd.id = rl.indice_id ';
-      $group = 'group by sd.descripcion, opc.puntaje) fav group by fav.descripcion ,fav.favorabilidad order by fav.id';
+        //quito la pregunta 54 por que es la pregunta multiple
+      $where = ' where not r.item_id = 54';
+      $group = ' group by sd.descripcion, opc.puntaje) fav group by fav.descripcion ,fav.favorabilidad order by fav.id';
 
 
+    //Filtro primario que define lo que se muestra
       switch ($titulo) {
           case 'Indice':
-                $join = 'inner join indice sd on sd.id = rl.indice_id ';
+                $join = ' inner join indice sd on sd.id = rl.indice_id ';
                 $demograficos = Indice::all();
               break;
           case 'Dimension':
-                $join = 'inner join dimensions sd on sd.id = rl.dimension_id ';
+                $join = ' inner join dimensions sd on sd.id = rl.dimension_id ';
                 $demograficos = Dimension::all();
               break;
 
           case 'Factor':
-                $join = 'inner join factors sd on sd.id = rl.factor_id ';
+                $join = ' inner join factors sd on sd.id = rl.factor_id ';
                 $demograficos = Factor::all();
               break;
 
@@ -723,8 +1168,103 @@ class EstadisticaController extends Controller
               break;
       }
 
+$max =sizeof($primario);
 
-      $consulta = $select . $from . $join . $group;
+$join2 = ' ';
+$where2 = ' ';
+
+$countwhere = 0;
+
+for ($i=0; $i < $max; $i++) { 
+
+      // filtro secundario que solo agrega filtros
+      switch ($primario[$i]) {
+          case 'Sede':
+                $join2 = $join2 .' inner join sede filt'.$i.' on filt'.$i.'.id = en.sede_id ';
+
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                
+              break;
+
+          case 'Antiguedad':
+                $join2 = $join2 .' inner join antiguedad filt'.$i.' on filt'.$i.'.id = en.antiguedad_id ';
+
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+
+                $countwhere++;
+                
+              break;
+
+          case 'Area':
+                $join2 = $join2 .' inner join area filt'.$i.' on filt'.$i.'.id = en.area_id ';
+
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+
+                $countwhere++;
+                
+              break;
+
+          case 'Contrato':
+                $join2 = $join2 .' inner join contrato filt'.$i.' on filt'.$i.'.id = en.contrato_id ';
+
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+
+                $countwhere++;
+                
+              break;
+
+          case 'Estudio':
+                $join2 = $join2 .' inner join estudio filt'.$i.' on filt'.$i.'.id = en.estudio_id ';
+
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+
+                $countwhere++;
+                
+              break;
+
+          case 'Genero':
+                $join2 = $join2 .' inner join genero filt'.$i.' on filt'.$i.'.id = en.genero_id ';
+
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+
+                $countwhere++;
+                
+              break;
+
+          case 'Puesto':
+                $join2 = $join2 .' inner join puesto filt'.$i.' on filt'.$i.'.id = en.puesto_id ';
+
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+
+                $countwhere++;
+                
+              break;
+
+          case 'Edad':
+                $join2 = $join2 .' inner join rangoedad filt'.$i.' on filt'.$i.'.id = en.rangoedad_id ';
+
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+
+                $countwhere++;
+                
+              break;
+          case 'Sector':
+                $join2 = $join2 .' inner join sector filt'.$i.' on filt'.$i.'.id = en.sector_id ';
+
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+
+                $countwhere++;
+                
+              break;
+
+          default:
+              
+              break;
+      }
+
+}
+
+      $consulta = $select . $from . $join . $join2 . $where2 .  $group ;
 
     //dd($consulta);
 
@@ -752,6 +1292,39 @@ class EstadisticaController extends Controller
           
       }
 
+
+//nuevo orden INICIO
+
+      $ArrayOrdenID = $this->ordenar($demograficos,$demos, $datosO1, $titulo);
+
+      //dd($ArrayOrdenID);
+
+//armos estos dos array que son los que van a dar datos al grafico INICIO
+
+      $porcentages00= array();
+      foreach ($ArrayOrdenID as $orden) {
+        array_push($porcentages00,$orden->porcentage);
+      }
+
+      $porcentages = json_encode($porcentages00);
+
+      //dd($porcentages);
+
+      $descripcion00 = array();
+      foreach ($ArrayOrdenID as $orden) {
+        array_push($descripcion00,$orden->descripcion);
+      }
+
+      $descripcion = json_encode($descripcion00);
+
+      //dd($descripcion);
+
+//armos estos dos array que son los que van a dar datos al grafico FIN
+
+//nuevo orden FIN
+
+
+
       //dd($demos);
 
       //dd($datosO1);
@@ -759,6 +1332,45 @@ class EstadisticaController extends Controller
       $datos = json_encode($consultadb);
 
       $demosO1 = json_encode($demos);
+
+
+//correccion de total inicio
+
+
+      $select2 = 'select count(en.id) as id from encuestado en ';
+
+      //declaro un where4 que no filtra nada, para poder concatenar where2 y where3 sin problemas
+      $where4 = ' where not en.id = 0';
+
+      if ($demog3 == 'todos') {
+          //no debe filtrar por el primario
+
+        if ($demog6 == 'todos') {
+          //no debe ablicar filtros
+          $consulta2 = $select2 ;
+          
+        }else{
+          $consulta2 = $select2 . $join2 . $where4 . $where2;
+
+        }
+        
+      }else{
+        $consulta2 = $select2 . $join2 . $where4 . $where2;
+      }
+
+      //$consulta2 = $select . $join2 . $join3 . $where4 . $where2 . $where3;
+
+      //dd($consulta2);
+
+      $consultadb2 = DB::select($consulta2);
+
+      //dd("valor que trae: " . $consultadb2[0]->id);
+
+      $encuestados = $consultadb2[0]->id;
+
+//correccion de total fin
+
+
 
       $demograficos = array('Indice' => 'Indice',
         'Dimension' => 'Dimension',
@@ -772,11 +1384,19 @@ class EstadisticaController extends Controller
             $datosO2 = $datosO1;
             $demosO2 = $demosO1;
 
+            $ArrayOrdenID2 = $ArrayOrdenID;
+            $porcentages2 = $porcentages;
+            $descripcion2 = $descripcion;
+
             //dd($datosO2);
             //dd($datosO2);
 
-            $html = view('encuesta.estadistica.injeccionfavorabilidaddemo')
+            $html = view('encuesta.estadistica.injeccionindicedimensionfactor')
                     ->with('titulo2',$titulo2)
+                    ->with('encuestados',$encuestados)
+                    ->with('ArrayOrdenID2',$ArrayOrdenID2)
+                    ->with('porcentages2',$porcentages2)
+                    ->with('descripcion2',$descripcion2)
                     ->with('datos2',$datos2)
                     ->with('datosO2',$datosO2)
                     ->with('demos2',$demos2)
@@ -812,7 +1432,8 @@ class EstadisticaController extends Controller
         $order = ' order by cantidad desc';
 
 
-      $consulta = $select . $from . $join . $join2 . $where . $where2. $group . $order;
+      //$consulta = $select . $from . $join . $join2 . $where . $where2. $group . $order;
+      $consulta = $select . $from . $join . $where . $group . $order;
 
       //dd($consulta);
 
@@ -824,7 +1445,7 @@ class EstadisticaController extends Controller
 
       $datos = json_encode($consultadb);
 
-      $total = Encuestado::where('sede_id', 1)->count();
+      $total = Encuestado::all()->count();
 
 
       $demograficos = array('Sede' => 'Sede',
@@ -867,15 +1488,31 @@ class EstadisticaController extends Controller
 
         $menuitem = 4;
 
+        $variableDemog = 0;
         $titulo = 'Indice';
 
-        if (isset($_GET['demografico'])) {
-            $variableDemog = $_GET['demografico'];
-            $demoId = $_GET['demografico2'];
+        $primario = array();
+        $secundario = array();
+
+        if (isset($_GET['demografico1'])) {
+            $variableDemog = $_GET['demografico1'];
             $titulo = $variableDemog;
-        }else{
-            return "demografico vino vacio";
+
+            //traigo los filtros secundarios
+            $demog1 = $_GET['demografico1'];
+            $demog3 = $_GET['demografico3'];
+            $demog4 = $_GET['demografico4'];
+            $demog6 = $_GET['demografico6'];
+           
+            //controlo que los demograficos 1 y 4 sean distintos
+
+            if ($demog1 != $demog4 && $demog6 != "todos"){
+              array_push($primario,$demog4);
+              array_push($secundario,$demog6);
+            }
+              
         }
+
        
         //dd($titulo);
 
@@ -884,64 +1521,73 @@ class EstadisticaController extends Controller
         $select = 'select opc.opcion as descripcion, opc.id as id, count(r.id) as cantidad';
         $from = ' from respuestamultiple r';
         $join = ' inner join opcion opc on opc.id = r.opcion_id inner join encuestado en on en.id = r.encuestado_id';
-        $join2 = ' inner join sede dm on dm.id = dm.opcion_id';
         $where = ' where item_id = 54';
-        $where2 = ' and dm.id = 1';
+        $where2 = ' ';
         $group = ' group by opc.id, opc.opcion';
         $order = ' order by cantidad desc';
 
       switch ($titulo) {
           case 'Sede':
                 $join2 = ' inner join sede dm on dm.id = en.sede_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('sede_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Antiguedad':
                 $join2 = ' inner join antiguedad dm on dm.id = en.antiguedad_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('antiguedad_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
+
               break;
 
           case 'Area':
                 $join2 = ' inner join area dm on dm.id = en.area_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('area_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Contrato':
                 $join2 = ' inner join contrato dm on dm.id = en.contrato_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('contrato_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Estudio':
                 $join2 = ' inner join estudio dm on dm.id = en.estudio_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('estudio_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Genero':
                 $join2 = ' inner join genero dm on dm.id = en.genero_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('genero_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Puesto':
                 $join2 = ' inner join puesto dm on dm.id = en.puesto_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('puesto_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Edad':
                 $join2 = ' inner join rangoedad dm on dm.id = en.rangoedad_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('rangoedad_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
           case 'Sector':
                 $join2 = ' inner join sector dm on dm.id = en.sector_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('sector_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           default:
@@ -950,7 +1596,124 @@ class EstadisticaController extends Controller
       }
 
 
-      $consulta = $select . $from . $join . $join2 . $where . $where2. $group . $order;
+$max =sizeof($primario);
+
+$join3 = ' ';
+$where3 = ' ';
+
+$countwhere = 0;
+
+for ($i=0; $i < $max; $i++) { 
+
+      // filtro secundario que solo agrega filtros
+      switch ($primario[$i]) {
+          case 'Sede':
+                $join3 = $join3 .' inner join sede filt'.$i.' on filt'.$i.'.id = en.sede_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Antiguedad':
+                $join3 = $join3 .' inner join antiguedad filt'.$i.' on filt'.$i.'.id = en.antiguedad_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Area':
+                $join3 = $join3 .' inner join area filt'.$i.' on filt'.$i.'.id = en.area_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Contrato':
+                $join3 = $join3 .' inner join contrato filt'.$i.' on filt'.$i.'.id = en.contrato_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Estudio':
+                $join3 = $join3 .' inner join estudio filt'.$i.' on filt'.$i.'.id = en.estudio_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Genero':
+                $join3 = $join3 .' inner join genero filt'.$i.' on filt'.$i.'.id = en.genero_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Puesto':
+                $join3 = $join3 .' inner join puesto filt'.$i.' on filt'.$i.'.id = en.puesto_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Edad':
+                $join3 = $join3 .' inner join rangoedad filt'.$i.' on filt'.$i.'.id = en.rangoedad_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+          case 'Sector':
+                $join3 = $join3 .' inner join sector filt'.$i.' on filt'.$i.'.id = en.sector_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          default:
+              
+              break;
+      }
+
+}
+
+
+      $consulta = $select . $from . $join . $join2 . $join3 . $where . $where2 . $where3 . $group . $order;
 
       //dd($consulta);
 
@@ -961,6 +1724,45 @@ class EstadisticaController extends Controller
 
 
       $datos = json_encode($consultadb);
+
+//correccion de total inicio
+
+
+      $select2 = 'select count(en.id) as id from encuestado en ';
+
+      //declaro un where4 que no filtra nada, para poder concatenar where2 y where3 sin problemas
+      $where4 = ' where not en.id = 0';
+
+      if ($demog3 == 'todos') {
+          //no debe filtrar por el primario
+
+        if ($demog6 == 'todos') {
+          //no debe ablicar filtros
+          $consulta2 = $select2 ;
+          
+        }else{
+          $consulta2 = $select2 . $join2 . $join3 . $where4 . $where2 . $where3;
+
+        }
+        
+      }else{
+        $consulta2 = $select2 . $join2 . $join3 . $where4 . $where2 . $where3;
+      }
+
+      //$consulta2 = $select . $join2 . $join3 . $where4 . $where2 . $where3;
+
+      //dd($consulta2);
+
+      $consultadb2 = DB::select($consulta2);
+
+      //dd($consultadb2[0]->id);
+
+      $total = $consultadb2[0]->id;
+
+      $encuestados = $total;
+
+//correccion de total fin
+
 
       $demograficos = array('Sede' => 'Sede',
         'Antiguedad' => 'Antiguedad',
@@ -985,7 +1787,9 @@ class EstadisticaController extends Controller
     
         return view('encuesta.estadistica.injeccionmultiple')
                     ->with('titulo2',$titulo2)
+                    ->with('encuestados',$encuestados)
                     ->with('funcion',$funcion)
+                    ->with('menuitem',$menuitem)
                     ->with('datos2',$datos2)
                     ->with('total2',$total2)
                     ->with('datosO2',$datosO2);
@@ -1021,7 +1825,8 @@ class EstadisticaController extends Controller
 
 
 
-      $consulta = $select . $from . $join . $where . $where2 . $group . $order;
+      //$consulta = $select . $from . $join . $where . $where2 . $group . $order;
+      $consulta = $select . $from . $where . $group . $order;
 
       //dd($consulta);
 
@@ -1035,8 +1840,20 @@ class EstadisticaController extends Controller
 
       $items = Item::all();
 
-      $total = Encuestado::where('sede_id', 1)->count();
+      $total = Encuestado::all()->count();
 
+//nuevo orden INICIO
+
+      $titulo = "Preguntas";
+
+      $imtesCPorcentages = $this->porcentages($items,$total, $datosO1, $titulo);
+
+      //dd($imtesCPorcentages);
+
+
+      //$ArrayOrdenID = $this->ordenar($items,$total, $datosO1, $titulo);
+
+//nuevo orden FIN
 
       $demograficos = array('Sede' => 'Sede',
         'Antiguedad' => 'Antiguedad',
@@ -1059,6 +1876,7 @@ class EstadisticaController extends Controller
                     ->with('menuitem',$menuitem)
                     ->with('demograficos',$demograficos)
                     ->with('demograficos2',$demograficos2)
+                    ->with('imtesCPorcentages',$imtesCPorcentages)
                     ->with('datosO1',$datosO1)
                     ->with('total',$total)
                     ->with('items',$items);
@@ -1075,30 +1893,42 @@ class EstadisticaController extends Controller
     public function injeccionpreguntas()
     {
 
+        $menuitem = 5;
 
+        $variableDemog = 0;
         $titulo = 'Indice';
 
-        if (isset($_GET['demografico'])) {
-            $variableDemog = $_GET['demografico'];
-            $demoId = $_GET['demografico2'];
+        $primario = array();
+        $secundario = array();
+
+        if (isset($_GET['demografico1'])) {
+            $variableDemog = $_GET['demografico1'];
             $titulo = $variableDemog;
-        }else{
-            return "demografico vino vacio";
+
+            //traigo los filtros secundarios
+            $demog1 = $_GET['demografico1'];
+            $demog3 = $_GET['demografico3'];
+            $demog4 = $_GET['demografico4'];
+            $demog6 = $_GET['demografico6'];
+           
+            //controlo que los demograficos 1 y 4 sean distintos
+
+            if ($demog1 != $demog4 && $demog6 != "todos"){
+              array_push($primario,$demog4);
+              array_push($secundario,$demog6);
+            }
+              
         }
        
         //dd($titulo);
 
         //consulta para los datos
 
-      $where = ' where not r.item_id = 54';
-      $group = ' group by sd.descripcion, opc.puntaje) fav group by fav.descripcion ,fav.favorabilidad order by fav.id';
-
       $select = 'select fav.descripcion as descripcion, fav.favorabilidad as favorabilidad, fav.id as id, fav.orden as orden, sum(fav.cantidad) as cantidad';
       $from = ' from (select it.contenido as descripcion, opc.puntaje as puntaje, it.id as id, count(r.id) as cantidad, case when (opc.puntaje < 3) then "Desfavorable" when (opc.puntaje = 3) then "Neutro" when (opc.puntaje > 3) then "Favorable" end as favorabilidad, case when (opc.puntaje < 3) then "3" when (opc.puntaje = 3) then "2" when (opc.puntaje > 3) then "1" end as orden from respuesta r inner join encuestado en on en.id = r.encuestado_id inner join opcion opc on opc.id = r.opcion_id inner join items it on it.id = r.item_id inner join relation rl on rl.item_id = it.id';
-      $join = ' inner join sede sd on sd.id = en.sede_id ';
         //quito la pregunta 54 por que es la pregunta multiple
       $where = ' where not r.item_id = 54';
-      $where2 = ' and en.sede_id = 1';
+      $where2 = ' ';
       $group = ' group by it.contenido, opc.puntaje ) fav group by fav.descripcion, fav.favorabilidad';
       $order = ' order by fav.id, fav.orden';
 
@@ -1106,55 +1936,65 @@ class EstadisticaController extends Controller
       switch ($titulo) {
           case 'Sede':
                 $join2 = ' inner join sede dm on dm.id = en.sede_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('sede_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Antiguedad':
                 $join2 = ' inner join antiguedad dm on dm.id = en.antiguedad_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('antiguedad_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
+
               break;
 
           case 'Area':
                 $join2 = ' inner join area dm on dm.id = en.area_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('area_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Contrato':
                 $join2 = ' inner join contrato dm on dm.id = en.contrato_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('contrato_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Estudio':
                 $join2 = ' inner join estudio dm on dm.id = en.estudio_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('estudio_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Genero':
                 $join2 = ' inner join genero dm on dm.id = en.genero_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('genero_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Puesto':
                 $join2 = ' inner join puesto dm on dm.id = en.puesto_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('puesto_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           case 'Edad':
                 $join2 = ' inner join rangoedad dm on dm.id = en.rangoedad_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('rangoedad_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
           case 'Sector':
                 $join2 = ' inner join sector dm on dm.id = en.sector_id';
-                $where2 = ' and dm.id = ' . $demoId;
-                $total = Encuestado::where('sector_id', $demoId)->count();
+                if ($demog3 != "todos") {
+                  $where2 = ' and dm.id = ' . $demog3;
+                }
               break;
 
           default:
@@ -1162,12 +2002,130 @@ class EstadisticaController extends Controller
               break;
       }
 
-      $consulta = $select . $from . $join . $join2 . $where . $where2. $group . $order;
 
-      //dd($consulta);
+$max =sizeof($primario);
+
+$join3 = ' ';
+$where3 = ' ';
+
+$countwhere = 0;
+
+for ($i=0; $i < $max; $i++) { 
+
+      // filtro secundario que solo agrega filtros
+      switch ($primario[$i]) {
+          case 'Sede':
+                $join3 = $join3 .' inner join sede filt'.$i.' on filt'.$i.'.id = en.sede_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Antiguedad':
+                $join3 = $join3 .' inner join antiguedad filt'.$i.' on filt'.$i.'.id = en.antiguedad_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Area':
+                $join3 = $join3 .' inner join area filt'.$i.' on filt'.$i.'.id = en.area_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Contrato':
+                $join3 = $join3 .' inner join contrato filt'.$i.' on filt'.$i.'.id = en.contrato_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Estudio':
+                $join3 = $join3 .' inner join estudio filt'.$i.' on filt'.$i.'.id = en.estudio_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Genero':
+                $join3 = $join3 .' inner join genero filt'.$i.' on filt'.$i.'.id = en.genero_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Puesto':
+                $join3 = $join3 .' inner join puesto filt'.$i.' on filt'.$i.'.id = en.puesto_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          case 'Edad':
+                $join3 = $join3 .' inner join rangoedad filt'.$i.' on filt'.$i.'.id = en.rangoedad_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+          case 'Sector':
+                $join3 = $join3 .' inner join sector filt'.$i.' on filt'.$i.'.id = en.sector_id ';
+                if ($countwhere > 0) {
+                  $where3 = $where3 . ' where filt'.$i.'.id ='.$secundario[$i];
+                }else{
+                  $where3 = $where3 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                $countwhere++;
+                
+              break;
+
+          default:
+              
+              break;
+      }
+
+}
+
+
+
+      $consulta = $select . $from . $join2 . $join3 . $where . $where2 . $where3 . $group . $order;
 
       $consultadb = DB::select($consulta);
 
+      //dd($consulta);
 
       $datosO1 = $consultadb;
 
@@ -1175,32 +2133,48 @@ class EstadisticaController extends Controller
 
       $datos = json_encode($consultadb);
 
-      $demograficos = array('Sede' => 'Sede',
-        'Antiguedad' => 'Antiguedad',
-        'Area' => 'Area',
-        'Contrato' => 'Contrato',
-        'Estudio' => 'Estudio',
-        'Genero' => 'Genero',
-        'Puesto' => 'Puesto',
-        'Edad' => 'Edad',
-        'Sector' => 'Sector');
 
-      $demograficos2 = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+      $select2 = 'select count(en.id) as id from encuestado en ';
+
+      //declaro un where4 que no filtra nada, para poder concatenar where2 y where3 sin problemas
+      $where4 = ' where not en.id = 0';
+
+      if ($demog3 == 'todos') {
+          //no debe filtrar por el primario
+
+        if ($demog6 == 'todos') {
+          //no debe ablicar filtros
+          $consulta2 = $select2 ;
+          
+        }else{
+          $consulta2 = $select2 . $join2 . $join3 . $where4 . $where2 . $where3;
+
+        }
+        
+      }else{
+        $consulta2 = $select2 . $join2 . $join3 . $where4 . $where2 . $where3;
+      }
+
+      //$consulta2 = $select . $join2 . $join3 . $where4 . $where2 . $where3;
+
+      //dd($consulta2);
+
+      $consultadb2 = DB::select($consulta2);
+
+      //dd($consultadb2[0]->id);
+
+      $total = $consultadb2[0]->id;
 
 
-      $titulo2 = $titulo;
-      $datos2 = $datos;
-      $datosO2 = $datosO1;
-      $total2 = $total;
-      $items2 = $items;
+//nuevo orden INICIO
+
+      $titulo = "Preguntas";
+
+      $imtesCPorcentages2 = $this->porcentages($items,$total, $datosO1, $titulo);
 
             return view('encuesta.estadistica.injeccionpreguntas')
-                    ->with('demograficos',$demograficos)
-                    ->with('demograficos2',$demograficos2)
-                    ->with('titulo2',$titulo2)
-                    ->with('datosO2',$datosO2)
-                    ->with('total2',$total2)
-                    ->with('items2',$items2);
+                    ->with('imtesCPorcentages2',$imtesCPorcentages2)
+                    ->with('total',$total);
 
     }
 
@@ -1258,53 +2232,395 @@ class EstadisticaController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function porcentages($demograficos, $demos, $datosO1, $titulo)
+    {
+
+    //<<<<<<<<<<<<<<<<<<< orden de mayor a menor por % INICIO
+
+      //ordenado de datos prueba 2 ordenar el objeto
+
+      //objeto temporar para array
+      
+      //array de objetos con porcentajes
+
+      //dd($demograficos);
+
+      //dd($datosO1);
+
+      if ($titulo == 'Preguntas') {
+
+        $porcentualOrdenado = array();
+
+        foreach ($demograficos as $demografico) {
+
+          $datosOrdenados = new ObjetoOrdenDos();
+
+          foreach ($datosO1 as $dato){
+
+            if ($dato->id == $demografico->id) {
+
+              //calculo el porcentaje de cada uno
+              
+              $porcentage = round(($dato->cantidad * 100) / $demos);
+
+              $datosOrdenados->id = $dato->id;
+              $datosOrdenados->descripcion = $dato->descripcion;
+              
+              if ($dato->favorabilidad == "Favorable") {
+
+                $datosOrdenados->favorable = $porcentage;
+                
+              }
+
+              if ($dato->favorabilidad == "Neutro") {
+
+                $datosOrdenados->neutro = $porcentage;
+                
+              }
+
+              if ($dato->favorabilidad == "Desfavorable") {
+
+                $datosOrdenados->desfavorable = $porcentage;
+                
+              }
+              
+              //lo guardo en un objeto y le hago un push al array de objeto
+
+            }
+
+          }
+
+          array_push($porcentualOrdenado,$datosOrdenados);
+          
+        }
+
+        
+      }else{
+
+        $porcentualOrdenado = array();
+
+        $item = 0;
+
+        foreach ($demograficos as $demografico) {
+
+          foreach ($datosO1 as $dato){
+
+            if ($dato->id == $demografico->id) {
+
+              $datosOrdenados = new ObjetoOrden();
+
+              //calculo el porcentaje de cada uno
+              
+              $porcentage = round(($dato->cantidad * 100) / $demos[$item],1);
+
+              $datosOrdenados->id = $dato->id;
+              $datosOrdenados->descripcion = $dato->descripcion;
+              $datosOrdenados->favorabilidad = $dato->favorabilidad;
+              $datosOrdenados->cantidad = $dato->cantidad;
+              $datosOrdenados->porcentage = $porcentage;
+
+              //lo guardo en un objeto y le hago un push al array de objeto
+
+              array_push($porcentualOrdenado,$datosOrdenados);
+
+            }
+
+          }
+          $item++;
+        }
+
+      }
+      
+      //dd($porcentualOrdenado);
+
+      if ($titulo == 'Preguntas') {
+        $ArrayOrdenID = collect($porcentualOrdenado)->sortByDesc('favorable')->all();
+
+        return $ArrayOrdenID;
+      }
+
+      //ahora debo extraer todos los datos favorables, y de no teneer, debo insertar un registro con el id y favorabilidad = 0
+
+      //$variableDOrden = new ObjetoOrden();
+
+      //array de objetos con porcentajes 
+
+      $IdOrdenados = array();
+
+      //dd($demograficos);
+
+      //recorro demografico y porcentajeOrdenado para armar un arreglo solo de favorables por cada demografico para poder ordenarlo a posterior
+      foreach ($demograficos as $demografico) {
+        
+        $variableDemog = new ObjetoOrdenDos();
+        $variableDemog->id = $demografico->id;
+        $variableDemog->descripcion = $demografico->contenido;
+
+        foreach ($porcentualOrdenado as $orden) {
+            
+            if ($demografico->id == $orden->id) {
+
+              if ($orden->favorabilidad == "Favorable") {
+
+                $variableDemog->favorable = $orden->porcentage;
+              }
+              if ($orden->favorabilidad == "Neutro") {
+
+                $variableDemog->neutro = $orden->porcentage;
+              }
+              if ($orden->favorabilidad == "Desfavorable") {
+
+                $variableDemog->desfavorable = $orden->porcentage;
+              }
+            }
+        }
+          array_push($IdOrdenados,$variableDemog);
+      }
+       
+      //dd($IdOrdenados);
+
+      //$IdOrdenados->asort();
+      
+      //de los favorables con porcentaje ordeno por % de mayor a menor
+
+      if ($titulo == 'Edad' || $titulo == 'Antiguedad' || $titulo == 'Estudio' ) {
+
+        $ArrayOrdenID = collect($IdOrdenados)->sortBy('id')->all();
+        
+      }else{
+
+      $ArrayOrdenID = collect($IdOrdenados)->sortByDesc('porcentage')->all();
+
+      }
+      //dd($ArrayOrdenID);      
+
+//<<<<<<<<<<<<<<<<<<< orden de mayor a menor por % FIN
+
+      return $ArrayOrdenID;
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
+
+
+
+
+
+
+
+    public function Ordenar($demograficos, $demos, $datosO1, $titulo)
+    {
+
+    //<<<<<<<<<<<<<<<<<<< orden de mayor a menor por % INICIO
+
+      //ordenado de datos prueba 2 ordenar el objeto
+
+      //objeto temporar para array
+      
+      //array de objetos con porcentajes
+
+      //dd($demograficos);
+
+      if ($titulo == 'Preguntas') {
+
+        $porcentualOrdenado = array();
+
+        foreach ($demograficos as $demografico) {
+
+          foreach ($datosO1 as $dato){
+
+            if ($dato->id == $demografico->id) {
+
+              $datosOrdenados = new ObjetoOrden();
+
+              //calculo el porcentaje de cada uno
+              
+              $porcentage = round(($dato->cantidad * 100) / $demos,1);
+
+              $datosOrdenados->id = $dato->id;
+              $datosOrdenados->descripcion = $dato->descripcion;
+              $datosOrdenados->favorabilidad = $dato->favorabilidad;
+              $datosOrdenados->cantidad = $dato->cantidad;
+              $datosOrdenados->porcentage = $porcentage;
+
+              //lo guardo en un objeto y le hago un push al array de objeto
+
+              array_push($porcentualOrdenado,$datosOrdenados);
+
+            }
+
+          }
+          
+        }
+       
+      }else{
+
+        $porcentualOrdenado = array();
+
+        $item = 0;
+
+        foreach ($demograficos as $demografico) {
+
+          foreach ($datosO1 as $dato){
+
+            if ($dato->id == $demografico->id) {
+
+              $datosOrdenados = new ObjetoOrden();
+
+              //calculo el porcentaje de cada uno
+              
+              $porcentage = round(($dato->cantidad * 100) / $demos[$item],1);
+
+              $datosOrdenados->id = $dato->id;
+              $datosOrdenados->descripcion = $dato->descripcion;
+              $datosOrdenados->favorabilidad = $dato->favorabilidad;
+              $datosOrdenados->cantidad = $dato->cantidad;
+              $datosOrdenados->porcentage = $porcentage;
+
+              //lo guardo en un objeto y le hago un push al array de objeto
+
+              array_push($porcentualOrdenado,$datosOrdenados);
+
+            }
+
+          }
+          $item++;
+        }
+
+      }
+      //dd($porcentualOrdenado);
+
+      //ahora debo extraer todos los datos favorables, y de no teneer, debo insertar un registro con el id y favorabilidad = 0
+
+      //$variableDOrden = new ObjetoOrden();
+
+      //array de objetos con porcentajes 
+
+      $IdOrdenados = array();
+
+      //dd($demograficos);
+
+      //recorro demografico y porcentajeOrdenado para armar un arreglo solo de favorables por cada demografico para poder ordenarlo a posterior
+      foreach ($demograficos as $demografico) {
+        $total = 0;
+        foreach ($porcentualOrdenado as $orden) {
+            
+            if ($demografico->id == $orden->id) {
+
+              if ($orden->favorabilidad == "Favorable") {
+
+                $variableDemog = $orden;
+
+                $total = $orden->porcentage;
+
+              }
+            }
+
+        }
+
+        if ($total == 0) {
+
+          $variableDemog = new ObjetoOrden();
+          $variableDemog->id = $demografico->id;
+          $variableDemog->descripcion = $demografico->descripcion;
+          $variableDemog->porcentage = 0;
+          $variableDemog->favorabilidad = "Favorable";
+
+          array_push($IdOrdenados,$variableDemog);
+
+        }else{
+
+          $variableDemog->porcentage = $total;
+          $variableDemog->favorabilidad = "Favorable";
+
+          array_push($IdOrdenados,$variableDemog);
+        }
+      }
+       
+      //dd($IdOrdenados);
+
+      //$IdOrdenados->asort();
+      
+      //de los favorables con porcentaje ordeno por % de mayor a menor
+
+      if ($titulo == 'Edad' || $titulo == 'Antiguedad' || $titulo == 'Estudio' ) {
+
+        $ArrayOrdenID = collect($IdOrdenados)->sortBy('id')->all();
+        
+      }else{
+
+      $ArrayOrdenID = collect($IdOrdenados)->sortByDesc('porcentage')->all();
+
+      }
+      //dd($ArrayOrdenID);      
+
+//<<<<<<<<<<<<<<<<<<< orden de mayor a menor por % FIN
+
+      return $ArrayOrdenID;
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
     public function demogshow()
     {
 
         if (isset($_GET['demografico'])) {
             $variableDemog = $_GET['demografico'];
             $funcion = $_GET['funcion'];
+            $menuitem = $_GET['menuitem'];
+            $parametro = $_GET['parametro'];
             //$demogId = $_GET['demografico2'];
             $titulo = $variableDemog;
         }else{
             return "demografico vino vacio";
         }
 
-
       switch ($titulo) {
           case 'Sede':
-                $demograficos2 = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+                $demog = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
               break;
 
           case 'Antiguedad':
-                $demograficos2 = Antiguedad::orderBy('rango', 'ASC')->lists('rango', 'id');
+                $demog = Antiguedad::orderBy('rango', 'ASC')->lists('rango', 'id');
               break;
 
           case 'Area':
-                $demograficos2 = Area::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+                $demog = Area::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
               break;
 
           case 'Contrato':
-                $demograficos2 = Contrato::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+                $demog = Contrato::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
               break;
 
           case 'Estudio':
-                $demograficos2 = Estudio::orderBy('nivel', 'ASC')->lists('nivel', 'id');
+                $demog = Estudio::orderBy('nivel', 'ASC')->lists('nivel', 'id');
               break;
 
           case 'Genero':
-                $demograficos2 = Genero::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+                $demog = Genero::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
               break;
 
           case 'Puesto':
-                $demograficos2 = Puesto::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+                $demog = Puesto::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
               break;
 
           case 'Edad':
-                $demograficos2 = RangoEdad::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+                $demog = RangoEdad::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
               break;
           case 'Sector':
-                $demograficos2 = Sector::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+                $demog = Sector::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
               break;
 
           default:
@@ -1312,9 +2628,14 @@ class EstadisticaController extends Controller
               break;
       }
 
-        $html = view('encuesta.estadistica.lista')
+      $demog2 = $demog;
+
+        $html = view('encuesta.estadistica.filtros')
                   ->with('funcion', $funcion)
-                  ->with('demograficos2', $demograficos2);
+                  ->with('parametro', $parametro)
+                  ->with('menuitem', $menuitem)
+                  ->with('demog2', $demog2)
+                  ->with('demog', $demog);
 
         return $html;
     }
