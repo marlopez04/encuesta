@@ -12,9 +12,9 @@
 		<?php $porcentaje =0; ?>
 
 	<tr>
-		<td><h6>{{$item->descripcion}}</h6></td>
+		<td><h6> {{$item->id}}  {{$item->descripcion}}</h6></td>
 				<td>
-					<svg width="500" height="25">
+					<svg width="600" height="25">
 					
 					<!-- FAVORABLE  INICIO -->
 					@if ( $item->favorable > 0 )
@@ -32,7 +32,7 @@
 
 
 					@if ($item->neutro > 0)
-						@if ( $item->neutro <= 6 )
+						@if ( $item->neutro <= 2 )
 							<rect width="{{ $item->neutro }}%" height="20px" x="{{ $porcentaje }}%" y="0" style="fill:rgb(255,255,0,0.2);stroke-width:1;stroke:rgb(255,255,0);opacity:0.8" />
 							<text fill="#000000" font-size="10" font-family="Verdana" x="{{ ($porcentaje + $item->neutro/2) -1}}%" y="15">{{ $item->neutro }}</text>
 							<?php $porcentaje = $porcentaje + $item->neutro; ?>
@@ -43,9 +43,9 @@
 						@endif
 					@endif
 					@if ($item->desfavorable > 0)
-						@if ($item->desfavorable <= 5)
+						@if ($item->desfavorable <= 2)
 							<rect width="{{100 - $porcentaje }}%" height="20px" x="{{ $porcentaje }}%" y="0" style="fill:rgba(255,0,0, 0.2);stroke-width:1;stroke:rgba(255, 0,0,1);" />
-							<text fill="#000000" font-size="10" font-family="Verdana" x="{{ $porcentaje + ((100 - $porcentaje)/2) }}%" y="15">{{ 100 - round($porcentaje,0) }}</text>
+							<text fill="#000000" font-size="10" font-family="Verdana" x="{{ $porcentaje }}%" y="15">{{ 100 - round($porcentaje,0) }}</text>
 						@else
 							<rect width="{{ 100 - $porcentaje }}%" height="20px" x="{{ $porcentaje }}%" y="0" style="fill:rgba(255,0,0, 0.2);stroke-width:1;stroke:rgba(255, 0,0,1);" />
 							<text fill="#000000" font-size="10" font-family="Verdana" x="{{ $porcentaje + ((100 - $porcentaje)/2) -1 }}%" y="15">{{ 100 - round($porcentaje,0) }}%</text>

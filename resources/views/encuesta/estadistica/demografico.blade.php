@@ -117,6 +117,8 @@ var border = new Array();
 
 var grafico = <?php echo $datos ?>;
 
+console.log(grafico);
+
 if(grafico.length > 0){
 
 	porcenTotal = 0;

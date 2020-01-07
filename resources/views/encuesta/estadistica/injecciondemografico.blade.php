@@ -55,6 +55,14 @@ var border = new Array();
 
 var grafico = <?php echo $datos2 ?>;
 
+console.log(grafico);
+console.log(grafico.length);
+
+console.log(typeof(grafico));
+
+var typo = typeof(grafico);
+
+
 if(grafico.length > 0){
 
 	porcenTotal = 0;
@@ -111,8 +119,8 @@ if(grafico.length > 0){
 }
 
 
-console.log(background);
-console.log(border);
+//console.log(background);
+//console.log(border);
 
 
 	//GRAFICO INICIO

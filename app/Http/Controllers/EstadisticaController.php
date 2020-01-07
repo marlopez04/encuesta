@@ -24,6 +24,7 @@ use App\ObjetoOrden;
 use App\ObjetoOrdenDos;
 
 
+
 use App\Http\Requests;
 
 class EstadisticaController extends Controller
@@ -183,7 +184,7 @@ class EstadisticaController extends Controller
       //asignar a variable el tipo de peticion (ajax / ruta comun)
 
 
-      $select = 'select sd.descripcion as descripcion, count(en.id) as cantidad ';
+      $select = 'select sd.id as id, sd.descripcion as descripcion, count(en.id) as cantidad ';
       $from = 'from encuestado en ';
       $join = 'inner join sede sd on sd.id = en.sede_id ';
       $group = 'group by sd.descripcion ';
@@ -192,43 +193,52 @@ class EstadisticaController extends Controller
       switch ($titulo) {
           case 'Sede':
                 $join = 'inner join sede sd on sd.id = en.sede_id ';
+                $demograficos = Sede::all();
               break;
 
           case 'Antiguedad':
                 $select = 'select sd.rango as descripcion, count(en.id) as cantidad ';
                 $join = 'inner join antiguedad sd on sd.id = en.antiguedad_id ';
                 $group = 'group by sd.rango ';
+                $demograficos = Antiguedad::all();
                 
               break;
 
           case 'Contrato':
                 $join = 'inner join contrato sd on sd.id = en.contrato_id ';
+                $demograficos = Contrato::all();
               break;
 
           case 'Area':
                 $join = 'inner join area sd on sd.id = en.area_id ';
+                $demograficos = Area::all();
               break;
 
           case 'Estudio':
                 $select = 'select sd.nivel as descripcion, count(en.id) as cantidad ';
                 $join = 'inner join estudio sd on sd.id = en.estudio_id ';
                 $group = 'group by sd.nivel ';
+                $demograficos = Estudio::all();
                 
               break;
 
           case 'Genero':
                 $join = 'inner join genero sd on sd.id = en.genero_id ';
+                $demograficos = Genero::all();
               break;
 
           case 'Puesto':
                 $join = 'inner join puesto sd on sd.id = en.puesto_id ';
+                $demograficos = Puesto::all();
               break;
 
           case 'Edad':
                 $join = 'inner join rangoedad sd on sd.id = en.rangoedad_id ';
+                $demograficos = RangoEdad::all();
               break;
           case 'Sector':
                 $join = 'inner join sector sd on sd.id = en.sector_id ';
+                $demograficos = Sector::all();
               break;
 
           default:
@@ -245,11 +255,68 @@ class EstadisticaController extends Controller
       
       //dd($consultadb);
 
+      $dats = $consultadb;
+
       $datosO = $consultadb;
+
+      //dd($datosO);
+
+      //AQUI
 
       $datos = json_encode($consultadb);
 
+
       //dd($datos);
+
+//<---------- agregado para orden por % INICIO ------>
+
+
+    if ($titulo == 'Edad' || $titulo == 'Antiguedad' || $titulo == 'Estudio' ) {
+
+          $ArrayOrdenID = collect($dats)->sortBy('id')->all();
+        
+      }else{
+
+          $ArrayOrdenID = collect($dats)->sortByDesc('cantidad')->all();
+
+      }
+
+      //dd($ArrayOrdenID);
+
+      //$datosO = $ArrayOrdenID;
+
+      //$datos00 = $ArrayOrdenID->toJson();
+
+      //$datos = json_encode($ArrayOrdenID);
+
+      //dd($datos);
+
+      //$datos000 = (array) $ArrayOrdenID;
+
+      //$datos000 = json_decode(json_encode($ArrayOrdenID), true);
+
+      //$datos001 = json_encode($datos000);
+
+
+      //dd($datos001);
+
+      //$datos001 = str_replace ( '[' , '{', $datos000);
+
+      //$datos001 = substr($datos000,0,-1)."o";
+      //$datos001 = substr($datos000,1);
+      //dd($datos001);
+
+      //$datos ='[' . substr($datos001,0,-1) . ']';
+
+      //dd($datos);
+
+//      $datos = str_replace ( ']' , '}', $datos001);
+
+//      $datos001 = substr($datos000,0,-1)."o";
+
+      //dd($datos);
+
+//<---------- agregado para orden por % FIN ------>
 
 
       $demograficos = array('Sede' => 'Sede',
@@ -834,6 +901,14 @@ for ($i=0; $i < $max; $i++) {
 
 //nuevo orden INICIO
 
+      $encuestados2 = $this->Encuestados($demog1,$demog3, $demog4, $demog6, $titulo);
+
+
+
+
+      $cantencuest = json_encode($encuestados2);
+
+
       $ArrayOrdenID = $this->ordenar($demograficos,$demos, $datosO1, $titulo);
 
       //dd($ArrayOrdenID);
@@ -849,14 +924,46 @@ for ($i=0; $i < $max; $i++) {
 
       //dd($porcentages);
 
+      $maximo = sizeof($encuestados2);
+      $descpn = "NO";
+
+      //dd($maximo);
+      $descripcion00 = array();
+      foreach ($ArrayOrdenID as $orden) {
+
+        for ($i=0; $i < $maximo ; $i++) { 
+
+          if ($encuestados2[$i]->id == $orden->id) {
+
+            if ($encuestados2[$i]->encuestados > 2) {
+                  array_push($descripcion00,$orden->descripcion);
+              }else{
+
+                  array_push($descripcion00,$descpn);
+              }
+
+          }
+          
+        }
+    
+      }
+  
+/*
       $descripcion00 = array();
       foreach ($ArrayOrdenID as $orden) {
         array_push($descripcion00,$orden->descripcion);
       }
+*/
 
       $descripcion = json_encode($descripcion00);
 
+
       //dd($descripcion);
+      //dd($encuestados2);
+      //dd($porcentages);
+      //dd($ArrayOrdenID);
+
+      //correct
 
 //armos estos dos array que son los que van a dar datos al grafico FIN
 
@@ -943,6 +1050,7 @@ for ($i=0; $i < $max; $i++) {
             $html = view('encuesta.estadistica.injeccionfavorabilidaddemo')
                     ->with('titulo2',$titulo2)
                     ->with('encuestados',$encuestados)
+                    ->with('encuestados2',$encuestados2)
                     ->with('ArrayOrdenID2',$ArrayOrdenID2)
                     ->with('porcentages2',$porcentages2)
                     ->with('descripcion2',$descripcion2)
@@ -1295,15 +1403,28 @@ for ($i=0; $i < $max; $i++) {
 
 //nuevo orden INICIO
 
+      $encuestados2 = $this->Encuestados($demog1,$demog3, $demog4, $demog6, $titulo);
+
+      $cantencuest = json_encode($encuestados2);
+
+      //dd($encuestados2);
+
       $ArrayOrdenID = $this->ordenar($demograficos,$demos, $datosO1, $titulo);
 
       //dd($ArrayOrdenID);
 
+
 //armos estos dos array que son los que van a dar datos al grafico INICIO
 
       $porcentages00= array();
+      $maximo = sizeof($encuestados2);
+
+      //dd($maximo);
+
       foreach ($ArrayOrdenID as $orden) {
-        array_push($porcentages00,$orden->porcentage);
+
+            array_push($porcentages00,$orden->porcentage);
+    
       }
 
       $porcentages = json_encode($porcentages00);
@@ -1368,7 +1489,7 @@ for ($i=0; $i < $max; $i++) {
 
       $encuestados = $consultadb2[0]->id;
 
-//correccion de total fin
+      //correccion de total fin
 
 
 
@@ -1394,6 +1515,8 @@ for ($i=0; $i < $max; $i++) {
             $html = view('encuesta.estadistica.injeccionindicedimensionfactor')
                     ->with('titulo2',$titulo2)
                     ->with('encuestados',$encuestados)
+                    ->with('encuestados2',$encuestados2)
+                    ->with('cantencuest',$cantencuest)
                     ->with('ArrayOrdenID2',$ArrayOrdenID2)
                     ->with('porcentages2',$porcentages2)
                     ->with('descripcion2',$descripcion2)
@@ -2638,6 +2761,171 @@ for ($i=0; $i < $max; $i++) {
                   ->with('demog', $demog);
 
         return $html;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
+    public function Encuestados($demog1, $demog3, $demog4, $demog6)
+    {
+
+//ingresan los filtros 1 y 2
+//se obtienen los encuestados
+//por cada demografico a graficar se controla que no tenga menos de 3 encuestados
+
+    $primario = array();
+    $secundario = array();
+
+    //los cargo en un arreglo
+//    if ($demog3 != "todos") {
+
+      array_push($primario,$demog1);
+      array_push($secundario,$demog3);
+//    }
+    
+    //controlo que los demograficos 1 y 4 sean distintos
+
+    if ($demog1 != $demog4 && $demog6 != "todos"){
+      array_push($primario,$demog4);
+      array_push($secundario,$demog6);
+      
+    }
+
+  $select = 'select filt0.id as id, count(en.id) as encuestados ';
+  $from = ' from encuestado en ';
+  $join =  ' ';
+  //$join =  ' inner join sede sd on sd.id = en.sede_id ';
+  $where2 = ' where en.encuesta_id != 0';
+  $group = ' group by filt0.id ';
+
+
+$max =sizeof($primario);
+
+$join2 = ' ';
+//$where2 = ' ';
+
+$countwhere = 0;
+
+for ($i=0; $i < $max; $i++) { 
+
+      // filtro secundario que solo agrega filtros
+      switch ($primario[$i]) {
+          case 'Sede':
+                $join = $join .' inner join sede filt'.$i.' on filt'.$i.'.id = en.sede_id ';
+
+                if ($secundario[$i] != "todos") {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+                
+              break;
+
+          case 'Antiguedad':
+                $join = $join .' inner join antiguedad filt'.$i.' on filt'.$i.'.id = en.antiguedad_id ';
+
+                if ($secundario[$i] != "todos") {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+
+                $countwhere++;
+                
+              break;
+
+          case 'Area':
+                $join = $join .' inner join area filt'.$i.' on filt'.$i.'.id = en.area_id ';
+
+                if ($secundario[$i] != "todos") {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+
+                $countwhere++;
+                
+              break;
+
+          case 'Contrato':
+                $join = $join .' inner join contrato filt'.$i.' on filt'.$i.'.id = en.contrato_id ';
+
+                if ($secundario[$i] != "todos") {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+
+                $countwhere++;
+                
+              break;
+
+          case 'Estudio':
+                $join2 = $join2 .' inner join estudio filt'.$i.' on filt'.$i.'.id = en.estudio_id ';
+
+                if ($secundario[$i] != "todos") {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+
+                $countwhere++;
+                
+              break;
+
+          case 'Genero':
+                $join = $join .' inner join genero filt'.$i.' on filt'.$i.'.id = en.genero_id ';
+
+                if ($secundario[$i] != "todos") {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+
+                $countwhere++;
+                
+              break;
+
+          case 'Puesto':
+                $join = $join .' inner join puesto filt'.$i.' on filt'.$i.'.id = en.puesto_id ';
+
+                if ($secundario[$i] != "todos") {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+
+                $countwhere++;
+                
+              break;
+
+          case 'Edad':
+                $join = $join .' inner join rangoedad filt'.$i.' on filt'.$i.'.id = en.rangoedad_id ';
+
+                if ($secundario[$i] != "todos") {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+
+                $countwhere++;
+                
+              break;
+          case 'Sector':
+                $join = $join .' inner join sector filt'.$i.' on filt'.$i.'.id = en.sector_id ';
+
+                if ($secundario[$i] != "todos") {
+                  $where2 = $where2 . ' and filt'.$i.'.id ='.$secundario[$i];
+                }
+
+                $countwhere++;
+                
+              break;
+
+          default:
+              
+              break;
+      }
+
+}
+
+      $consulta = $select . $from . $join . $join2 . $where2 .  $group ;
+
+    //dd($consulta);
+
+      $consultadb = DB::select($consulta);
+
+      //dd($consultadb);
+
+        return $consultadb;
     }
 
     /**

@@ -1,5 +1,9 @@
 <?php $item =0; ?>
 <?php $total =0; ?>
+<?php $encuest =0; ?>
+
+<?php $max =sizeof($encuestados2); ?>
+
 
 @foreach ($datosO2 as $dato)
 
@@ -25,15 +29,34 @@
 	<br>
 	@foreach ($ArrayOrdenID2 as $dato)
 
+			@for ($i = 0; $i < $max; $i++)
+	    		@if ($encuestados2[$i]->id == $dato->id)
+					<?php $encuest = $encuestados2[$i]->encuestados; ?>
+				@endif
+			@endfor
+
 				@if ($dato->favorabilidad == "Favorable" && $dato->porcentage > 0 )
 
-					<span>
-						<svg width="30" height="10">
-					  <rect id="{{$item}}" width="30" height="10" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)" />
-						</svg> {{ $dato->porcentage }}%  {{ $dato->descripcion }}</span>
-						<br>
+					@if ($encuest > 2)
 
-						<?php $item++; ?>
+						<span>
+							<svg width="30" height="10">
+						  <rect id="{{$item}}" width="30" height="10" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)" />
+							</svg> {{ $dato->porcentage }}%  {{ $dato->descripcion }}</span>
+							<br>
+
+							<?php $item++; ?>
+					@else
+
+						<span>
+							<svg width="30" height="10">
+						  <rect id="{{$item}}" width="30" height="10" style="fill:rgba(54, 162, 235, 1);stroke-width:1;stroke:rgb(0,0,0)" />
+							</svg> {{ $dato->descripcion }} <b>(Encuestados insuficientes para graficar)</b> </span>
+							<br>
+
+							<?php $item++; ?>
+
+					@endif
 
 				@endif
 
@@ -61,7 +84,12 @@ var datos = new Array();
 var background = new Array();
 var border = new Array();
 
+var h = 0;
+
 var porcentage = <?php echo $porcentages2 ?>;
+var descripcion3 = <?php echo $descripcion2 ?>;
+
+console.log(descripcion3);
 
 if(porcentage.length > 0){
 
@@ -83,16 +111,39 @@ if(porcentage.length > 0){
 			console.log(desc);
 
 			e = j;
+			
+			if ( descripcion3[h] == "NO") {
 
-			document.getElementById(e).style.fill = backgroundColor[j];
-			document.getElementById(e).style.stroke = borderColor[j];
+				h = h + 1;
 
-			background.push(backgroundColor[j]);
-			border.push(borderColor[j]);
-	
-			descripcion.push(desc);
+				console.log("entro al no: ");
 
-			datos.push(dat);
+				console.log(descripcion3[h]);
+
+				document.getElementById(e).style.fill = 'rgba(151, 155, 150, 0.2)';
+				document.getElementById(e).style.stroke = 'rgba(151, 155, 150, 1)';
+
+			}else{ 
+
+				h = h + 1;
+
+				console.log("entro a descripcion: ");
+
+				console.log(descripcion3[h]);
+
+				document.getElementById(e).style.fill = backgroundColor[j];
+				document.getElementById(e).style.stroke = borderColor[j];
+
+				background.push(backgroundColor[j]);
+				border.push(borderColor[j]);
+
+
+				descripcion.push(desc);
+
+				datos.push(dat);
+
+
+			}
 
 			j = j + 1;
 

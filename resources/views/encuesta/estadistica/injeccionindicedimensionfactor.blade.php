@@ -1,6 +1,7 @@
 <?php $item =0; ?>
 <?php $total =0; ?>
 
+
 @foreach ($datosO2 as $dato)
 
 	<?php $total += $dato->cantidad; ?>
@@ -25,7 +26,7 @@
 	<br>
 	@foreach ($ArrayOrdenID2 as $dato)
 
-				@if ($dato->favorabilidad == "Favorable" && $dato->porcentage > 0 )
+				@if ($dato->favorabilidad == "Favorable" && $dato->porcentage > 0)
 
 					<span>
 						<svg width="30" height="10">
@@ -36,7 +37,6 @@
 						<?php $item++; ?>
 
 				@endif
-
 		
 	@endforeach
 	</div>
@@ -70,7 +70,6 @@ if(porcentage.length > 0){
 	j = 0;
 
 	for (var i = 0; i < porcentage.length; i++) {
-
 
 		if (parseInt(porcentage[i]) > 0) {
 
