@@ -1,8 +1,11 @@
+
+<?php $encu = 5; ?>
+
 <?php $descripcion = array('sede', 'participacion x demog', 'favorabilidad demografico','indice dimension factor', 'respuesta multiple','preguntas'); ?>
 
 <?php $funcion = array('sede', 'participacionxdemog', 'favorabilidaddemografico','indicedimensionfactor', 'multiple','preguntas'); ?>
 
-<?php $direccion = array(route('estadistica.sede'),route('estadistica.demografico'),route('estadistica.favorabilidaddemografico'),route('estadistica.indicedimensionfactor'),route('estadistica.multiple'), route('estadistica.preguntas')); ?>
+<?php $direccion = array(route('estadistica.sede', $encu),route('estadistica.demografico', $encu),route('estadistica.favorabilidaddemografico', $encu),route('estadistica.indicedimensionfactor', $encu),route('estadistica.multiple', $encu), route('estadistica.preguntas', $encu)); ?>
 
 @if ( $menuitem == 3)
 <div class='row'>
