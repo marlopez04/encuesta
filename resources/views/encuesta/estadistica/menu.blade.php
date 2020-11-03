@@ -2,6 +2,7 @@
 
 <?php $direccion = array(route('estadistica.sede'),route('estadistica.demografico'),route('estadistica.favorabilidaddemografico'),route('estadistica.indicedimensionfactor'),route('estadistica.multiple'), route('estadistica.preguntas')); ?>
 
+<!--//actualizar -->
 
 <?php $i = 0; ?>
 

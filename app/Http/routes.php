@@ -99,6 +99,8 @@ Route::group(['prefix' => '/estadistica'], function
 
 		//Route::get('sede', 'EstadisticaController@sede');
 
+		//actualizacion
+
 		Route::get('sede',[
 		'uses' => 'EstadisticaController@sede',
 		'as'   => 'estadistica.sede'

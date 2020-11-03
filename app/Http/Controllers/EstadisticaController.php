@@ -23,9 +23,9 @@ use App\Opcion;
 use App\ObjetoOrden;
 use App\ObjetoOrdenDos;
 
-
-
 use App\Http\Requests;
+
+//actualizacion
 
 class EstadisticaController extends Controller
 {
