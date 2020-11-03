@@ -23,11 +23,6 @@ use App\Opcion;
 use App\ObjetoOrden;
 use App\ObjetoOrdenDos;
 
-<<<<<<< HEAD
-=======
-//TODO: agregar filtro de 
-
->>>>>>> 4069a69781e11669eb3161e241752ae140be10b0
 use App\Http\Requests;
 
 //actualizacion
@@ -110,7 +105,7 @@ class EstadisticaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function sede($id)
+    public function sede()
     {
         //variable para definir que boton del menu esta
         //seleccionado
@@ -148,15 +143,8 @@ class EstadisticaController extends Controller
         //dd($favorabilidad);
         
         //dd($sedefavorbs);
-
-        //agregado 20201005 inicio
-        $encuestas = Encuesta::orderBy('descripcion', 'DES')->lists('descripcion', 'id');
-        //agregado 20201005 fin
        
         return view('encuesta.estadistica.sede')
-            //agregado 20201005 inicio
-            ->with('encuestas',$encuestas)
-            //agregado 20201005 fin
             ->with('menuitem',$menuitem)
             ->with('sedetotal',$sedetotal)
             ->with('sedetucuman',$sedetucuman)
@@ -367,7 +355,7 @@ class EstadisticaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function demografico($id)
+    public function demografico()
     {
 
         $menuitem = 1;
@@ -413,14 +401,7 @@ class EstadisticaController extends Controller
             //dd('ruta comun');
             //dd($datosO1);
 
-        //agregado 20201005 inicio
-        $encuestas = Encuesta::orderBy('descripcion', 'DES')->lists('descripcion', 'id');
-        //agregado 20201005 fin
-
             return view('encuesta.estadistica.demografico')
-                //agregado 20201005 inicio
-                    ->with('encuestas',$encuestas)
-                //agregado 20201005 fin
                     ->with('menuitem',$menuitem)
                     ->with('demograficos',$demograficos)
                     ->with('titulo',$titulo)
@@ -438,7 +419,7 @@ class EstadisticaController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function favorabilidaddemografico($id)
+    public function favorabilidaddemografico()
     {
 
         $menuitem = 2;
@@ -631,14 +612,7 @@ class EstadisticaController extends Controller
             //dd('ruta comun');
             //dd($datosO1);
 
-        //agregado 20201005 inicio
-        $encuestas = Encuesta::orderBy('descripcion', 'DES')->lists('descripcion', 'id');
-        //agregado 20201005 fin
-
             return view('encuesta.estadistica.favorabilidaddemografica')
-                  //agregado 20201005 inicio
-                    ->with('encuestas',$encuestas)
-                  //agregado 20201005 fin
                     ->with('menuitem',$menuitem)
                     ->with('ArrayOrdenID',$ArrayOrdenID)
                     ->with('demograficos',$demograficos)
@@ -1097,7 +1071,7 @@ for ($i=0; $i < $max; $i++) {
      * @return \Illuminate\Http\Response
      */
 
-    public function indicedimensionfactor($id)
+    public function indicedimensionfactor()
     {
 
         $menuitem = 3;
@@ -1205,14 +1179,7 @@ for ($i=0; $i < $max; $i++) {
             //dd('ruta comun');
             //dd($datosO1);
 
-        //agregado 20201005 inicio
-        $encuestas = Encuesta::orderBy('descripcion', 'DES')->lists('descripcion', 'id');
-        //agregado 20201005 fin
-
             return view('encuesta.estadistica.indicedimensionfactor')
-                //agregado 20201005 inicio
-                    ->with('encuestas',$encuestas)
-                //agregado 20201005 fin
                     ->with('menuitem',$menuitem)
                     ->with('indicadores',$indicadores)
                     ->with('demograficos',$demograficos)
@@ -1569,7 +1536,7 @@ for ($i=0; $i < $max; $i++) {
      * @return \Illuminate\Http\Response
      */
 
-    public function multiple($id)
+    public function multiple()
     {
 
         $menuitem = 4;
@@ -1621,14 +1588,7 @@ for ($i=0; $i < $max; $i++) {
             //dd('ruta comun');
             //dd($datosO1);
 
-        //agregado 20201005 inicio
-        $encuestas = Encuesta::orderBy('descripcion', 'DES')->lists('descripcion', 'id');
-        //agregado 20201005 fin
-
             return view('encuesta.estadistica.multiple')
-                  //agregado 20201005 inicio
-                    ->with('encuestas',$encuestas)
-                  //agregado 20201005 fin
                     ->with('menuitem',$menuitem)
                     ->with('demograficos',$demograficos)
                     ->with('demograficos2',$demograficos2)
@@ -1966,7 +1926,7 @@ for ($i=0; $i < $max; $i++) {
      * @return \Illuminate\Http\Response
      */
 
-    public function preguntas($id)
+    public function preguntas()
     {
 
         $menuitem = 5;
@@ -2035,14 +1995,7 @@ for ($i=0; $i < $max; $i++) {
             //dd('ruta comun');
             //dd($datosO1);
 
-        //agregado 20201005 inicio
-        $encuestas = Encuesta::orderBy('descripcion', 'DES')->lists('descripcion', 'id');
-        //agregado 20201005 fin
-
             return view('encuesta.estadistica.preguntas')
-                  //agregado 20201005 inicio
-                    ->with('encuestas',$encuestas)
-                  //agregado 20201005 fin
                     ->with('menuitem',$menuitem)
                     ->with('demograficos',$demograficos)
                     ->with('demograficos2',$demograficos2)

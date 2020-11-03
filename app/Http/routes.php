@@ -47,7 +47,7 @@ Route::group(['prefix' => '/estadistica'], function
 		Route::resource('/', 'EstadisticaController');
 		//Route::get('demografico', 'EstadisticaController@demografico');
 
-		Route::get('demografico/{id}',[
+		Route::get('demografico',[
 		'uses' => 'EstadisticaController@demografico',
 		'as'   => 'estadistica.demografico'
 		]);
@@ -57,7 +57,7 @@ Route::group(['prefix' => '/estadistica'], function
 		'as'   => 'estadistica.injecciondemo'
 		]);
 
-		Route::get('favorabilidaddemografico/{id}',[
+		Route::get('favorabilidaddemografico',[
 		'uses' => 'EstadisticaController@favorabilidaddemografico',
 		'as'   => 'estadistica.favorabilidaddemografico'
 		]);
@@ -67,7 +67,7 @@ Route::group(['prefix' => '/estadistica'], function
 		'as'   => 'estadistica.injeccionfavorabilidaddemo'
 		]);
 
-		Route::get('indicedimensionfactor/{id}',[
+		Route::get('indicedimensionfactor',[
 		'uses' => 'EstadisticaController@indicedimensionfactor',
 		'as'   => 'estadistica.indicedimensionfactor'
 		]);
@@ -77,7 +77,7 @@ Route::group(['prefix' => '/estadistica'], function
 		'as'   => 'estadistica.injeccionindicedimensionfactor'
 		]);
 
-		Route::get('multiple/{id}',[
+		Route::get('multiple',[
 		'uses' => 'EstadisticaController@multiple',
 		'as'   => 'estadistica.multiple'
 		]);
@@ -87,7 +87,7 @@ Route::group(['prefix' => '/estadistica'], function
 		'as'   => 'estadistica.injeccionmultiple'
 		]);
 
-		Route::get('preguntas/{id}',[
+		Route::get('preguntas',[
 		'uses' => 'EstadisticaController@preguntas',
 		'as'   => 'estadistica.preguntas'
 		]);
@@ -97,24 +97,15 @@ Route::group(['prefix' => '/estadistica'], function
 		'as'   => 'estadistica.injeccionpreguntas'
 		]);
 
-		//formato de ruta valido para llamar en la vista route('estadistica.sede', $id)
-//		Route::get('sede/{id}', 'EstadisticaController@sede')->name('estadistica.sede');
+		//Route::get('sede', 'EstadisticaController@sede');
 
-<<<<<<< HEAD
 		//actualizacion
 
 		Route::get('sede',[
-=======
-
-
-		Route::get('sede/{id}',[
->>>>>>> 4069a69781e11669eb3161e241752ae140be10b0
 		'uses' => 'EstadisticaController@sede',
 		'as'   => 'estadistica.sede'
 		]);
 
-/*
-*/
 		Route::get('torta', 'EstadisticaController@torta');
 
 		Route::get('demogshow',[
