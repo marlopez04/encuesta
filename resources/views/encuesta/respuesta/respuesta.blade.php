@@ -71,7 +71,7 @@
 				<div class="item pregunta active ng-scope col-md-12">
 			@endif
             
-                <p class="ng-binding">{{$item->id}}- {{$item->contenido}}</p>
+                <p class="ng-binding">{{$item->numero}}- {{$item->contenido}}</p>
            @if($item->id == 54)
 
 		   	<?php $tabla=0  ?>
@@ -171,7 +171,10 @@
 
 			@if($pregunta->id == $item->id && $pintado == 0)
 
- 				<li data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" data-s="3" data-o="0" data-slide-to="0" class="active">{{$pregunta->id}}</li>
+<!-- modificacion 2020 por numeracion de preguntas 16.11.2020-->
+
+ 				<li data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" data-s="3" data-o="0" data-slide-to="0" class="active">{{$pregunta->numero}}</li>
+<!-- modificacion 2020 por numeracion de preguntas 16.11.2020-->
 
  				<?php $pintado=1;  ?>
 		
@@ -181,8 +184,9 @@
 
  			@if($pregunta->id == $respuesta->item_id && $pintado == 0)
 
- 				<li data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" style="background: rgb(255,189,117);" data-s="3" data-o="0" data-slide-to="0" class="active">{{$pregunta->id}}</li>
-
+<!-- modificacion 2020 por numeracion de preguntas 16.11.2020-->
+ 				<li data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" style="background: rgb(255,189,117);" data-s="3" data-o="0" data-slide-to="0" class="active">{{$pregunta->numero}}</li>
+<!-- modificacion 2020 por numeracion de preguntas 16.11.2020-->
  				<?php $pintado=1;  ?>
 		
 			@endif
@@ -191,7 +195,7 @@
 
 			@if($pintado == 0)
 
-				<li class="sincontestar" data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}"  data-s="3" data-o="0" data-slide-to="0">{{$pregunta->id}}</li>
+				<li class="sincontestar" data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}"  data-s="3" data-o="0" data-slide-to="0">{{$pregunta->numero}}</li>
 
 			@endif
 	

@@ -5,7 +5,7 @@
 			@else
 				<div class="item pregunta active ng-scope col-md-12">
 			@endif
-            <p class="ng-binding">{{$item->id}}- {{$item->contenido}}</p>
+            <p class="ng-binding">{{$item->numero}}- {{$item->contenido}}</p>
            @if($item->id == 54)
 
            <?php $tabla=0  ?>

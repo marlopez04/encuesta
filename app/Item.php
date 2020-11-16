@@ -8,7 +8,7 @@ class Item extends Model
 {
 
     protected $table = "items";
-    protected $fillable = ['contenido','valoracion_negativa', 'tipo_id','encuesta_id', 'opciones_codigo'];
+    protected $fillable = ['contenido','valoracion_negativa', 'tipo_id','encuesta_id', 'opciones_codigo', 'numero'];
 
 
     public function encuesta()
