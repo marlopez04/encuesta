@@ -103,7 +103,7 @@
 
       @if($pregunta->id == $item->id && $pintado == 0)
 
-        <li data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" data-s="3" data-o="0" data-slide-to="0" class="active">{{$pregunta->id}}</li>
+        <li data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" data-s="3" data-o="0" data-slide-to="0" class="active">{{$pregunta->numero}}</li>
 
         <?php $pintado=1;  ?>
     
@@ -113,7 +113,7 @@
 
       @if($pregunta->id == $respuesta->item_id && $pintado == 0)
 
-        <li data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" style="background: rgb(255,189,117);" data-s="3" data-o="0" data-r="$respuesta->id" data-slide-to="0" class="active">{{$pregunta->id}}</li>
+        <li data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" style="background: rgb(255,189,117);" data-s="3" data-o="0" data-r="$respuesta->id" data-slide-to="0" class="active">{{$pregunta->numero}}</li>
 
         <?php $pintado=1;  ?>
     
