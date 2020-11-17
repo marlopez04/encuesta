@@ -105,7 +105,32 @@ class EncuestadoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $encuestado = Encuestado::find($id);
+
+        $encuestas = Encuesta::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+        $areas = Area::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+        $antiguedades = Antiguedad::orderBy('id', 'ASC')->lists('rango', 'id');
+        $rangoedades = RangoEdad::orderBy('id', 'ASC')->lists('descripcion', 'id');
+        $estudios = Estudio::orderBy('id', 'ASC')->lists('nivel', 'id');
+        $sedes = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+        $sectores = Sector::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+        $generos = Genero::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+        $contratos = Contrato::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+        $puestos = Puesto::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+        
+        return view('encuesta.encuestado.edit')
+            ->with('encuestado',$encuestado)
+            ->with('encuestas',$encuestas)
+            ->with('areas',$areas)
+            ->with('antiguedades',$antiguedades)
+            ->with('rangoedades',$rangoedades)
+            ->with('estudios',$estudios)
+            ->with('sedes',$sedes)
+            ->with('sectores',$sectores)
+            ->with('generos',$generos)
+            ->with('puestos',$puestos)
+            ->with('contratos',$contratos);
+
     }
 
     /**
