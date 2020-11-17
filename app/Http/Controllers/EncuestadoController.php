@@ -107,29 +107,52 @@ class EncuestadoController extends Controller
     {
         $encuestado = Encuestado::find($id);
 
-        $encuestas = Encuesta::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
-        $areas = Area::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
-        $antiguedades = Antiguedad::orderBy('id', 'ASC')->lists('rango', 'id');
-        $rangoedades = RangoEdad::orderBy('id', 'ASC')->lists('descripcion', 'id');
-        $estudios = Estudio::orderBy('id', 'ASC')->lists('nivel', 'id');
-        $sedes = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
-        $sectores = Sector::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
-        $generos = Genero::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
-        $contratos = Contrato::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
-        $puestos = Puesto::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+        //valida que el usuario ya cargo el perfil del encuestado
+        if ($encuestado->contrato_id == 0) {
         
-        return view('encuesta.encuestado.edit')
-            ->with('encuestado',$encuestado)
-            ->with('encuestas',$encuestas)
-            ->with('areas',$areas)
-            ->with('antiguedades',$antiguedades)
-            ->with('rangoedades',$rangoedades)
-            ->with('estudios',$estudios)
-            ->with('sedes',$sedes)
-            ->with('sectores',$sectores)
-            ->with('generos',$generos)
-            ->with('puestos',$puestos)
-            ->with('contratos',$contratos);
+            //no cargo el perfil del encuestado
+
+            $encuestas = Encuesta::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+            $areas = Area::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+            $antiguedades = Antiguedad::orderBy('id', 'ASC')->lists('rango', 'id');
+            $rangoedades = RangoEdad::orderBy('id', 'ASC')->lists('descripcion', 'id');
+            $estudios = Estudio::orderBy('id', 'ASC')->lists('nivel', 'id');
+            $sedes = Sede::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+            $sectores = Sector::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+            $generos = Genero::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+            $contratos = Contrato::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+            $puestos = Puesto::orderBy('descripcion', 'ASC')->lists('descripcion', 'id');
+            
+            return view('encuesta.encuestado.edit')
+                ->with('encuestado',$encuestado)
+                ->with('encuestas',$encuestas)
+                ->with('areas',$areas)
+                ->with('antiguedades',$antiguedades)
+                ->with('rangoedades',$rangoedades)
+                ->with('estudios',$estudios)
+                ->with('sedes',$sedes)
+                ->with('sectores',$sectores)
+                ->with('generos',$generos)
+                ->with('puestos',$puestos)
+                ->with('contratos',$contratos);
+
+        }else{
+
+            //si cargo el perfil del encuestado, por eso redirecciona directo a las preguntas
+
+            $encuesta_id = $encuestado->encuesta_id;
+
+            $item= Item::where('encuesta_id',$encuesta_id)->first();
+    
+            $id2 = $item->id;
+    
+            $id = $encuestado->id;
+    
+            $path = 'encuesta/respuesta/' . $id . '/' . $id2;
+    
+            return redirect($path);
+            
+        }
 
     }
 
@@ -142,7 +165,21 @@ class EncuestadoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $encuestado = Encuestado::find($id);
+        $encuestado->fill($request->all());
+        $encuestado->save();
+
+        $encuesta_id = $encuestado->encuesta_id;
+
+        $item= Item::where('encuesta_id',$encuesta_id)->first();
+
+        $id2 = $item->id;
+
+        $id = $encuestado->id;
+
+        $path = 'encuesta/respuesta/' . $id . '/' . $id2;
+
+        return redirect($path);
     }
 
     /**
