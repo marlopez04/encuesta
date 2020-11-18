@@ -29,15 +29,9 @@ Route::group(['prefix' => '/encuesta'], function(){
 	Route::post('respuestamultiple','RespuestaMultipleController@store')->name('respuestamultiple');
 
 	Route::resource('estadistica', 'EstadisticaController');
-
-/*
-	Route::get('estadistica/sede',[
-		'uses' => 'EstadisticaController@sede',
-		'as'   => 'encuesta.estadistica.sede'
-	]);
-*/
-
-	
+//ruta para envio de mail 17.11.2020
+	Route::resource('mail', 'MailController');
+//ruta para envio de mail 17.11.2020
 
 });
 
