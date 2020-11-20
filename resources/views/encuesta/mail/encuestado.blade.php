@@ -7,14 +7,7 @@
 <body>
     Lo invitamos a llenar el siguiente cuestionario 
     <p>
-    {{$direccion}}
-    <p>
-    <p>
-    <a href="{{$direccion}}">Llenar encuesta 1</a>
-    <p>
-    <a href="<?php echo $direccion; ?>">Llenar encuesta 2</a>
-    
-
+    <a href="{{$direccion}}">Llenar encuesta</a>
     
 </body>
 </html>
