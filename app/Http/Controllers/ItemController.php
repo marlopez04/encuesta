@@ -59,7 +59,9 @@ class ItemController extends Controller
         $opcion_id = $_GET['opcion'];
 
         $opciones = Opcion::all();
-        $items = Item::all();
+        $items = Item::where('encuesta_id',$encuestado_id);
+
+        $CantItems = Item::where('encuesta_id',$encuestado_id)->count();
 
         $PregOpc = 0;
         $contestadas = 0;

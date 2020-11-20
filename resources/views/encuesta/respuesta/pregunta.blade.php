@@ -123,7 +123,7 @@
 
       @if($pintado == 0)
 
-        <li class="sincontestar" data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" data-s="3" data-o="0" data-r="0" data-slide-to="0">{{$pregunta->id}}</li>
+        <li class="sincontestar" data-target="#myCarousel"onclick='pregunta(this)' data-p="{{$pregunta->id}}" data-e="{{$encuestado->id}}" data-s="3" data-o="0" data-r="0" data-slide-to="0">{{$pregunta->numero}}</li>
 
       @endif
   

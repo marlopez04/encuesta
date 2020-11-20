@@ -58,7 +58,8 @@ class RespuestaController extends Controller
     {
         $encuestado = Encuestado::find($id);
         $encuestado->load('area','antiguedad','rangoedad','estudio','sede','sector','genero','contrato','puesto');
-        $item = Item::find(1);
+        //$item = Item::find(1);
+        $item = Item::where('encuesta_id',$encuestado->encuesta_id)->first();
         $opciones = Opcion::all();
 
 //        dd($encuestado);
@@ -79,7 +80,8 @@ class RespuestaController extends Controller
     {
         $encuestado = Encuestado::find($id);
         $encuestado->load('area','antiguedad','rangoedad','estudio','sede','sector','genero','contrato','puesto');
-        $items = Item::find(1);
+        //$items = Item::find(1);
+        $items = Item::where('encuesta_id',$encuestado->encuesta_id)->first();
         $opciones = Opcion::all();
 
 //        dd($encuestado);
@@ -111,7 +113,7 @@ class RespuestaController extends Controller
 
     public function respuesta($id,$id2)
     {
-        // $id es de la encuesta
+        // $id es de el encuestado
         // $id2 respuesta para saber en que pregunta quedo
       
         $encuestado = Encuestado::find($id);
@@ -120,7 +122,10 @@ class RespuestaController extends Controller
         //$respuestasmultiples = RespuestaMultiple::where('encuestado_id',$id)->where('item_id',$id2)->get();
 
         $item = Item::find($id2);
-        $items = Item::all();
+        //$items = Item::all();
+        $items = Item::where('encuesta_id',$encuestado->encuesta_id);
+        //cantidad de preguntas para controlar si estan todas contestadas 20.11.2020
+        $CantItems = Item::where('encuesta_id',$id)->count();
         $opt = $item->tipo_id;
 
         $opciones = Opcion::all();
@@ -149,6 +154,7 @@ class RespuestaController extends Controller
             ->with('item',$item)
             ->with('PregOpc',$PregOpc)
             ->with('items',$items)
+            ->with('CantItems',$CantItems)
             ->with('contestadas',$contestadas)
             ->with('opciones',$opciones);
     }
