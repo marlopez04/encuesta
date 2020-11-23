@@ -157,7 +157,7 @@ class RespuestaController extends Controller
         }
         $encuestado1 = json_encode($encuestado);
 
-        if ($contestadas == $CantItmes && $CantMulti == 0) {
+        if ($contestadas == $CantItems && $CantMulti == 0) {
             return view('encuesta.respuesta.encuestafin2');
 
         }else{
