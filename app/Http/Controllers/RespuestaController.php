@@ -126,6 +126,9 @@ class RespuestaController extends Controller
         $items = Item::where('encuesta_id',$encuestado->encuesta_id)->get();
         //cantidad de preguntas para controlar si estan todas contestadas 20.11.2020
         $CantItems = Item::where('encuesta_id',$encuestado->encuesta_id)->count();
+        //cantidad de preguntas multiples que tienen la encuesta, para habilitar o no habilitar el control de todas las opciones multiples finalizadas.
+        $CantMulti = Item::where('tipo_id',$encuestado->encuesta_id)->count();
+
         $opt = $item->tipo_id;
 
         //dd($CantItems);
@@ -159,7 +162,10 @@ class RespuestaController extends Controller
             ->with('item',$item)
             ->with('PregOpc',$PregOpc)
             ->with('items',$items)
+            //agregado 23.11.2020
             ->with('CantItems',$CantItems)
+            ->with('CantMulti',$CantMulti)
+            //agregado 23.11.2020
             ->with('contestadas',$contestadas)
             ->with('opciones',$opciones);
     }

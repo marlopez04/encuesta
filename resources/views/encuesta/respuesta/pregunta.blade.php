@@ -161,6 +161,9 @@ var aItems = [];
 
 var aItems2 = <?php echo $encuestado->respuestasmultiples ?>;
 
+var CantItems = '{{ $CantItems }}';
+var CantMulti = '{{ $CantMulti }}';
+
 console.log(aItems2);
 
 if(aItems2.length > 0){
@@ -190,7 +193,17 @@ function botonfinalizar(){
   
   console.log(contestadas);
 
-  if (contestadas == 54 && aItems.length == 10) {
+  //control si tiene respuestas multiples o no
+  if (CantMulti == 0) {
+    //la encuesta no tiene pregunta con multiples respuestas
+    var mult = 10;
+    //se le asigna 10 respuestas multiples, por que RRHH asi lo predispuso    
+  }else{
+    var mult = aItems.length;
+  }
+
+
+  if (contestadas == CantItems && mult == 10) {
     alert("¡Encuesta finalizada con éxito!");
     window.location.replace('{{route("encuesta.encuestado.create")}}');
   }else{
@@ -201,6 +214,7 @@ function botonfinalizar(){
 
   };
 
+//la funcion "pregunta" solo aplica para la pregunta multiple (encuesta 2019 la pregunta multiple era la 54)
 function pregunta(objeto){
   //controlo si es la pregunta 54
   
