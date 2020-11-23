@@ -6,60 +6,6 @@
 <div class="panel panel-widget">
 	<div class="panel-title">
 	</div>
-<!--
-	</div>
-		<div class="form-group">
-			<table class="table table-hover table-striped">
-				<th>Area</th>
-				<th>Antiguedad</th>
-				<th>Edad</th>
-				<th>Estudio</th>
-				<th>Sede</th>
-				<th>Sector</th>
-				<th>Genero</th>
-				<th>Contrato</th>
-				<th>Puesto</th>
-				<tr>
-					<td>{{$encuestado->area->descripcion}}</td>
-					<td>{{$encuestado->antiguedad->rango}}</td>
-					<td>{{$encuestado->rangoedad->descripcion}}</td>
-					<td>{{$encuestado->estudio->descripcion}}</td>
-					<td>{{$encuestado->sede->descripcion}}</td>
-					<td>{{$encuestado->sector->descripcion}}</td>
-					<td>{{$encuestado->genero->descripcion}}</td>
-					<td>{{$encuestado->contrato->descripcion}}</td>				
-					<td>{{$encuestado->puesto->descripcion}}</td>					
-				</tr>
-			</table>
-
-		<div class="form-group">
-			<table class="table table-hover table-striped">
-				<th>id</th>
-				<th>PREGUNTA</th>
-
-					<tr>
-						<td>{{$item->id}}</td>
-						<td>{{$item->contenido}}</td>
-					</tr>
-
-					<tr>
-						<td colspan="2">
-							<div class="btn-group btn-group-toggle" data-toggle="buttons">
-							@foreach ($opciones as $opcion)
-								@if($opcion->codigo == $item->tipo_id)				
-  								<label class="btn btn-warning">
-    							<a class="opcion" onclick='opcion1(this)' data-id="{{$opcion->id}}" type="radio" name="options" id="option1" autocomplete="off"> {{$opcion->opcion}}
-  								</a>
-  								</label>
-								@endif
-							@endforeach
-							</div>
-						</td>
-					</tr>
-			
-			</table>			
-		</div>
--->
 
 <div id='sector1'>
 
@@ -257,11 +203,20 @@ var CantMulti = '{{ $CantMulti }}';
 var aItems = [];
 
 var aItems2 = <?php echo $encuestado->respuestasmultiples ?>;
+  
+ //control si tiene respuestas multiples o no
+if (CantMulti == 0) {
+    //la encuesta no tiene pregunta con multiples respuestas
+    var mult = 10;
+    //se le asigna 10 respuestas multiples, por que RRHH asi lo predispuso    
+}else{
+    var mult = aItems.length;
+}
 
 console.log(aItems2);
 
-if(aItems2.length > 0){
-	for (var i = aItems2.length - 1; i >= 0; i--) {
+if(mult > 0 && CantMulti > 0){
+	for (var i = mult - 1; i >= 0; i--) {
 		var obj = {
   				encuestado : aItems2[i]['encuestado_id'],
   				pregunta   : aItems2[i]['item_id'],
@@ -308,7 +263,7 @@ function botonfinalizar(){
 
   };
 
-//la funcion "pregunta" solo aplica para la pregunta multiple (encuesta 2019 la pregunta multiple era la 54)
+
 function pregunta(objeto){
 	//controlo si es la pregunta 54 multiple
 	
@@ -392,12 +347,29 @@ function pregunta(objeto){
 
 	}else{
 
+		//control si tiene respuestas multiples o no
+		if (CantMulti == 0) {
+			//la encuesta no tiene pregunta con multiples respuestas
+			var mult = 10;
+			//se le asigna 10 respuestas multiples, por que RRHH asi lo predispuso    
+		}else{
+			var mult = aItems.length;
+		}
+
+		if (contestadas == CantItems && mult == 10) {
+				alert("¡Encuesta finalizada con éxito!");
+				window.location.replace('{{route("encuesta.item.index")}}');
+		}else{
+				alert("debe contestar todas las preguntas");
+				$('.sincontestar').css('background','RED');
+		}
+
 		if (preg == 54 && aItems.length < 10) {
 			alert("debe seleccionar 10 opciones antes de continuar");
 			return false;
 		}
 
-	  console.log("llama a la funcion");
+	    console.log("llama a la funcion");
   		console.log($(objeto).data('e'));
   		console.log($(objeto).data('p'));
   		console.log($(objeto).data('s'));

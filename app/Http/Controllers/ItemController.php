@@ -21,7 +21,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        //
+        return view('encuesta.respuesta.encuestafin');
     }
 
     /**
