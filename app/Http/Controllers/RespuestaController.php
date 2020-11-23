@@ -156,6 +156,11 @@ class RespuestaController extends Controller
 
         }
         $encuestado1 = json_encode($encuestado);
+
+        if ($contestadas == $CantItmes && $CantMulti == 0) {
+            return view('encuesta.respuesta.encuestafin2');
+
+        }else{
         return view('encuesta.respuesta.respuesta')
             ->with('encuestado',$encuestado)
             ->with('encuestado1',$encuestado1)
@@ -168,6 +173,7 @@ class RespuestaController extends Controller
             //agregado 23.11.2020
             ->with('contestadas',$contestadas)
             ->with('opciones',$opciones);
+        }
     }
 
     /**

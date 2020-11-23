@@ -166,10 +166,18 @@ class ItemController extends Controller
 
         $contestadas = Respuesta::where('encuestado_id',$encuestado_id)->count();
         
+        
+
         //$encuestado->load('area','antiguedad','rangoedad','estudio','sede','sector','genero','contrato','puesto', 'respuestas', 'respuestasmultiples');
         $encuestado->load('respuestas', 'respuestasmultiples');
 
-        $html = view('encuesta.respuesta.pregunta')
+        if ($contestadas == $CantItems && $CantMulti == 0) {
+            $html = view('encuesta.respuesta.encuestafin2');
+            return $html;
+
+        }else{
+
+            $html = view('encuesta.respuesta.pregunta')
             ->with('encuestado',$encuestado)
             ->with('item',$item)
             ->with('PregOpc',$PregOpc)
@@ -181,7 +189,11 @@ class ItemController extends Controller
             ->with('contestadas',$contestadas)
             ->with('opciones',$opciones);
 
-        return $html;
+            return $html;
+
+        }
+
+
         
     }
 

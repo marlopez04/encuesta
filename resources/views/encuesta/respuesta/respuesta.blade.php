@@ -359,9 +359,6 @@ function pregunta(objeto){
 		if (contestadas == CantItems && mult == 10) {
 				alert("¡Encuesta finalizada con éxito!");
 				window.location.replace('{{route("encuesta.item.index")}}');
-		}else{
-				alert("debe contestar todas las preguntas");
-				$('.sincontestar').css('background','RED');
 		}
 
 		if (preg == 54 && aItems.length < 10) {
