@@ -123,10 +123,15 @@ class RespuestaController extends Controller
 
         $item = Item::find($id2);
         //$items = Item::all();
-        $items = Item::where('encuesta_id',$encuestado->encuesta_id);
+        $items = Item::where('encuesta_id',$encuestado->encuesta_id)->get();
         //cantidad de preguntas para controlar si estan todas contestadas 20.11.2020
-        $CantItems = Item::where('encuesta_id',$id)->count();
+        $CantItems = Item::where('encuesta_id',$encuestado->encuesta_id)->count();
         $opt = $item->tipo_id;
+
+        //dd($CantItems);
+
+//        dd($encuestado->encuesta_id);
+        //dd($items);
 
         $opciones = Opcion::all();
 

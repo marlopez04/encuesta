@@ -58,8 +58,10 @@ class ItemController extends Controller
         $status = $_GET['status'];
         $opcion_id = $_GET['opcion'];
 
+        $encuestado = Encuestado::find($encuestado_id);
+
         $opciones = Opcion::all();
-        $items = Item::where('encuesta_id',$encuestado_id);
+        $items = Item::where('encuesta_id',$encuestado->encuesta_id)->get();
 
         $CantItems = Item::where('encuesta_id',$encuestado_id)->count();
 
@@ -162,7 +164,6 @@ class ItemController extends Controller
 
         $contestadas = Respuesta::where('encuestado_id',$encuestado_id)->count();
         
-        $encuestado = Encuestado::find($encuestado_id);
         //$encuestado->load('area','antiguedad','rangoedad','estudio','sede','sector','genero','contrato','puesto', 'respuestas', 'respuestasmultiples');
         $encuestado->load('respuestas', 'respuestasmultiples');
 
