@@ -26,11 +26,10 @@ class MailController extends Controller
 
 
         $mails = Email::all();
-        dd($mails);
+        //dd($mails);
 
-        foreach ($mails as $key => $mailencuestado) {
-            # code...
-        
+        foreach ($mails as $mailencuestado) {
+
             //dd($mails);
 
             $encuestado = new Encuestado();
@@ -46,6 +45,8 @@ class MailController extends Controller
             $encuestado->sede_id = 0;
             $encuestado->contrato_id = 0;
             $encuestado->save();
+
+            //dd($mailencuestado->mail);
 
             $direccion = "http://35.238.99.14/encuesta/encuestado/" . $encuestado->id . "/edit";
 
