@@ -24,8 +24,10 @@ class MailController extends Controller
         //$encuestado = Encuestado::find(309);
         //dd($encuestado);
 
-
-        $mails = Email::all();
+        // status = 1 (ok para enviar)
+        // status = 2 (ya enviado, se bloquea para el envio)
+        
+        $mails = Email::where('status', 1 )->get();
         //dd($mails);
 
         foreach ($mails as $this->mail) {
