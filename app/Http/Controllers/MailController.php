@@ -26,6 +26,7 @@ class MailController extends Controller
 
 
         $mails = Email::all();
+        dd($mails);
 
         foreach ($mails as $key => $mailencuestado) {
             # code...
