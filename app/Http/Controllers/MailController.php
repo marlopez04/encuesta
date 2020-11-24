@@ -59,7 +59,7 @@ class MailController extends Controller
 
             Mail::send('encuesta.mail.encuestado', ['direccion' => $direccion], function($msj){
                 $msj->subject('Encuesta de Clima 2020');
-                $msj->to('mlmorales@cofaral.com.ar');
+                $msj->to($mailencuestado->mail);
             });
 
 
