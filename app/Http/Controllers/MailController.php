@@ -28,7 +28,7 @@ class MailController extends Controller
         $mails = Email::all();
         //dd($mails);
 
-        foreach ($mails as $mailencuestado) {
+        foreach ($mails as $this->mail) {
 
             //dd($mails);
 
@@ -47,21 +47,14 @@ class MailController extends Controller
             $encuestado->save();
 
             //dd($mailencuestado->mail);
+            //dd($mailencuestado['mail']);
+            //dd($this->mail->mail);
 
             $direccion = "http://35.238.99.14/encuesta/encuestado/" . $encuestado->id . "/edit";
 
-            //dd($direccion);
-
-    /*
-
-            return view('encuesta.mail.encuestado')
-                ->with('direccion',$direccion);
-
-    */
-
             Mail::send('encuesta.mail.encuestado', ['direccion' => $direccion], function($msj){
                 $msj->subject('Encuesta de Clima 2020');
-                $msj->to($mailencuestado->mail);
+                $msj->to($this->mail->mail);
             });
 
 
