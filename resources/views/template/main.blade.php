@@ -88,7 +88,7 @@
 
         <footer>
             <hr>
-            <p>&copy; Cofaral 2019</p>
+            <p>&copy; Cofaral 2020</p>
         </footer>
     </div>  
   </DIV>
