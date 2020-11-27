@@ -4,7 +4,7 @@
 
 <?php $direccion = array(route('estadistica.sede'),route('estadistica.demografico'),route('estadistica.favorabilidaddemografico'),route('estadistica.indicedimensionfactor'),route('estadistica.multiple'), route('estadistica.preguntas')); ?>
 
-<!--actualizacion->
+<!--actualizacion-->
 
 @if ( $menuitem == 3)
 <div class='row'>

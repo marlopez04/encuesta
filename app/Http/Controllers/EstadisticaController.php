@@ -142,6 +142,7 @@ class EstadisticaController extends Controller
 
         //dd($favorabilidad);
         
+        //
         //dd($sedefavorbs);
        
         return view('encuesta.estadistica.sede')

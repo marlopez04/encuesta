@@ -1,6 +1,11 @@
+<!-- Se quita multiple por la encuesta 2020, se debe incorporar de nuevo para la encuesta 2021
 <?php $descripcion = array('sede', 'participacion x demog', 'favorabilidad demografico','indice dimension factor', 'respuesta multiple','preguntas'); ?>
 
 <?php $direccion = array(route('estadistica.sede'),route('estadistica.demografico'),route('estadistica.favorabilidaddemografico'),route('estadistica.indicedimensionfactor'),route('estadistica.multiple'), route('estadistica.preguntas')); ?>
+-->
+<?php $descripcion = array('sede', 'participacion x demog', 'favorabilidad demografico','indice dimension factor','preguntas'); ?>
+
+<?php $direccion = array(route('estadistica.sede'),route('estadistica.demografico'),route('estadistica.favorabilidaddemografico'),route('estadistica.indicedimensionfactor'), route('estadistica.preguntas')); ?>
 
 <!--//actualizar -->
 
