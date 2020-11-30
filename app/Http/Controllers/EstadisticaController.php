@@ -1964,11 +1964,23 @@ for ($i=0; $i < $max; $i++) {
 
       $items = Item::all();
 
-      $total = Encuestado::all()->count();
+      //$total = Encuestado::all()->count();
 
+      $consuEncuestados = 'SELECT count(id) as encuestados FROM (SELECT en.id AS id, COUNT(rsp.id) AS contestadas FROM encuestado en left JOIN respuesta rsp ON rsp.encuestado_id = en.id GROUP BY en.id ) const WHERE const.contestadas = 52';
+
+      $total = DB::select($consuEncuestados);
+      
+      $total = $total[0]->encuestados;
+      //dd($total);
 //nuevo orden INICIO
 
       $titulo = "Preguntas";
+
+      //dd($items);
+      //52
+      //dd($total);
+      //25
+      //dd($datosO1);
 
       $imtesCPorcentages = $this->porcentages($items,$total, $datosO1, $titulo);
 
@@ -1993,6 +2005,7 @@ for ($i=0; $i < $max; $i++) {
 
       //dd('titulo: '. $titulo . ', Variable: '. $variableDemog);
 
+      //dd($imtesCPorcentages);
             //dd('ruta comun');
             //dd($datosO1);
 
@@ -2293,6 +2306,10 @@ for ($i=0; $i < $max; $i++) {
 //nuevo orden INICIO
 
       $titulo = "Preguntas";
+
+      //dd($items);
+      //dd($total);
+      //dd($datosO1);
 
       $imtesCPorcentages2 = $this->porcentages($items,$total, $datosO1, $titulo);
 
