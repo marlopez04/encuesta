@@ -65,7 +65,7 @@ class MailController extends Controller
 
             //marco el mail como ya enviado status = 2
 
-            $email = Email::find($mail->id);
+            $email = Email::find($this->mail->id);
             $email->status = 2;
             $email->save();
 
