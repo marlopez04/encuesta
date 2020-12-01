@@ -57,6 +57,11 @@ class MailController extends Controller
             //creo el linck para enviar por mail
             $direccion = "http://35.238.99.14/encuesta/encuestado/" . $encuestado->id . "/edit";
 
+/*
+            return view('encuesta.mail.encuestado')
+            ->with('direccion',$direccion);            
+*/
+
             //envio por mail el linck
             Mail::send('encuesta.mail.encuestado', ['direccion' => $direccion], function($msj){
                 $msj->subject('Encuesta de Clima 2020');
