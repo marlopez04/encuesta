@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'mlmorales@cofaral.com.ar', 'name' => 'Lopez Morales Martin'],
+    'from' => ['address' => 'rrhhcofaral@gmail.com', 'name' => 'RRHH'],
 
     /*
     |--------------------------------------------------------------------------

@@ -30,10 +30,12 @@ class MailController extends Controller
         $mails = Email::where('status', 1 )->get();
         //dd($mails);
 
+        //recorro todos los mails, creando un "encuestado", armando el linck y enviando el mail
         foreach ($mails as $this->mail) {
 
             //dd($mails);
 
+            //creo el encuestado vacio
             $encuestado = new Encuestado();
             $encuestado->descripcion = " ";
             $encuestado->area_id = 0;
@@ -52,12 +54,20 @@ class MailController extends Controller
             //dd($mailencuestado['mail']);
             //dd($this->mail->mail);
 
+            //creo el linck para enviar por mail
             $direccion = "http://35.238.99.14/encuesta/encuestado/" . $encuestado->id . "/edit";
 
+            //envio por mail el linck
             Mail::send('encuesta.mail.encuestado', ['direccion' => $direccion], function($msj){
                 $msj->subject('Encuesta de Clima 2020');
                 $msj->to($this->mail->mail);
             });
+
+            //marco el mail como ya enviado status = 2
+
+            $email = Email::find($mail->id);
+            $email->status = 2;
+            $email->save();
 
 
         }
