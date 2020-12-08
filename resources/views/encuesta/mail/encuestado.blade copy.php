@@ -15,12 +15,11 @@
 </head>
 <body>
 <!--
-    <body style=" background-color:rgb(142,195,235); width: 600px;">
 <table>
 <tr>
 <td>
 -->
-<!--
+
 <div style="background-color:rgb(142,195,235); width: 600px; height: 550px; vertical-align: middle; text-align: center;">
     <div style="background-color:rgb(142,195,235); width: 600px; height: 120px; padding-top: 6px; padding-right: 30px; padding-bottom: 50px; padding-left: 80px;">
         <div style=" padding-top: 10px; padding-right: 30px; padding-bottom: 10px; padding-left: 70px;" >
@@ -64,24 +63,18 @@
         </div>
     </div>
 
-    <h5>En caso de no poder acceder a la encuesta por medio del boton, puede copiar el linck, presentado aqui:</h5>
-    <h4>{{$direccion}}</h4>
-
+    <h4>En caso de no poder acceder a la encuesta por medio del boton, puede copiar el linck, presentado aqui:</h4>
+    <h6>{{$direccion}}</h6>
 </div>
--->
-<!--
+<!--- 
     </td>
     <td>
--->
     <p>
-    
     <a href="{{$direccion}}">
-        <img src="https://cofaral.s3.us-east-2.amazonaws.com/prod/images/web/encuesta2020.jpg">   
+        <img src="{{asset('images/ENCUESTA-CLIMA-2020-para-mailing.jpg')}}">   
     </a>
-<!--
-    <img src="https://cofaral.s3.us-east-2.amazonaws.com/prod/images/web/ULTIMO+DIA.PNG">
-    -->
-    <!--
+
+ 
     </td>
     </tr>
 </table>    

@@ -36,6 +36,8 @@
 
 @foreach ($imtesCPorcentages as $item)
 
+	<?php $porcentaje =0; ?>
+
 	@if ($item->id != 54)
 
 		<?php $porcentaje =0; ?>

@@ -36,6 +36,8 @@ class MailController extends Controller
             //dd($mails);
 
             //creo el encuestado vacio
+
+
             $encuestado = new Encuestado();
             $encuestado->descripcion = " ";
             $encuestado->area_id = 0;
@@ -50,12 +52,18 @@ class MailController extends Controller
             $encuestado->contrato_id = 0;
             $encuestado->save();
 
+          
+
+
             //dd($mailencuestado->mail);
             //dd($mailencuestado['mail']);
             //dd($this->mail->mail);
 
             //creo el linck para enviar por mail
-            $direccion = "http://35.238.99.14/encuesta/encuestado/" . $encuestado->id . "/edit";
+            $direccion = "https://encuesta.cofaral.com.ar/encuesta/encuestado/" . $encuestado->id . "/edit";
+        
+            //direccion de la imagen para enviar recordatorio
+            //$direccion = "https://cofaral.s3.us-east-2.amazonaws.com/prod/images/web/ULTIMO+DIA.PNG";
 
 /*
             return view('encuesta.mail.encuestado')
@@ -70,9 +78,11 @@ class MailController extends Controller
 
             //marco el mail como ya enviado status = 2
 
+            
             $email = Email::find($this->mail->id);
             $email->status = 2;
             $email->save();
+            
 
 
         }
