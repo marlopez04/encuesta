@@ -1964,6 +1964,8 @@ for ($i=0; $i < $max; $i++) {
 
       $items = Item::all();
 
+      //dd($items);
+
       //$total = Encuestado::all()->count();
 
       $consuEncuestados = 'SELECT count(id) as encuestados FROM (SELECT en.id AS id, COUNT(rsp.id) AS contestadas FROM encuestado en left JOIN respuesta rsp ON rsp.encuestado_id = en.id GROUP BY en.id ) const WHERE const.contestadas = 52';
@@ -2404,7 +2406,7 @@ for ($i=0; $i < $max; $i++) {
               
               $porcentage = round(($dato->cantidad * 100) / $demos);
 
-              $datosOrdenados->id = $dato->id;
+              $datosOrdenados->id = $demografico->numero;
               $datosOrdenados->descripcion = $dato->descripcion;
               
               if ($dato->favorabilidad == "Favorable") {

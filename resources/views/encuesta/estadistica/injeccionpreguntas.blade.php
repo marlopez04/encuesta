@@ -12,7 +12,7 @@
 		<?php $porcentaje =0; ?>
 
 	<tr>
-		<td><h6> {{$item->numero}}  {{$item->descripcion}}</h6></td>
+		<td><h6> {{$item->id}}  {{$item->descripcion}}</h6></td>
 				<td>
 					<svg width="600" height="25">
 					
