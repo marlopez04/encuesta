@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Material Design for Bootstrap</title>
+  <!-- MDB icon -->
+  <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <!-- Material Design Bootstrap -->
+  <link rel="stylesheet" href="css/mdb.min.css">
+  <!-- Your custom styles (optional) -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Start your project here-->  
+  <div style="height: 100vh">
+    <div class="flex-center flex-column">
+      <h1 class="text-hide animated fadeIn mb-4" style="background-image: url('https://mdbootstrap.com/img/logo/mdb-transparent-250px.png'); width: 250px; height: 90px;">MDBootstrap</h1>
+      <h5 class="animated fadeIn mb-3">Thank you for using our product. We're glad you're with us.</h5>
+      <p class="animated fadeIn text-muted">MDB Team</p>
+      <br>
+
+      <h4>Barra para cemaforo</h4>
+<div class="progress">
+  <div class="progress-bar" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+  <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+  <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+      <br>
+      <br>
+      <canvas id="canvas" width=512 height=512></canvas>
+      <br>
+      <br>
+
+      <canvas id="myCanvas2" width="200" height="200" ></canvas>
+
+      <br>
+      <br>
+
+
+      <canvas id="canvas4" width="400" height="150"></canvas>
+      <br>
+      <br>
+      <br>
+
+      <canvas id="myChart" style="max-width: 500px;"></canvas>
+
+      <br>
+      <br>
+
+      <canvas id="horizontalBar" style="max-width: 500px;"></canvas>
+
+      <br>
+      <br>
+
+      <canvas id="pieChart" style="max-width: 500px;"></canvas>
+
+    </div>
+
+  </div>
+  <!-- End your project here-->
+
+  <!-- jQuery -->
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="js/popper.min.js"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="js/mdb.min.js"></script>
+  <!-- Your custom scripts (optional) -->
+  <script type="text/javascript"></script>
+
+
+  <script type="text/javascript">
+
+var ctx = document.getElementById("myChart").getContext('2d');
+var myChart = new Chart(ctx, {
+type: 'bar',
+data: {
+labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+datasets: [{
+label: '# of Votes',
+data: [12, 19, 3, 5, 2, 3],
+backgroundColor: [
+'rgba(255, 99, 132, 0.2)',
+'rgba(54, 162, 235, 0.2)',
+'rgba(255, 206, 86, 0.2)',
+'rgba(75, 192, 192, 0.2)',
+'rgba(153, 102, 255, 0.2)',
+'rgba(255, 159, 64, 0.2)'
+],
+borderColor: [
+'rgba(255,99,132,1)',
+'rgba(54, 162, 235, 1)',
+'rgba(255, 206, 86, 1)',
+'rgba(75, 192, 192, 1)',
+'rgba(153, 102, 255, 1)',
+'rgba(255, 159, 64, 1)'
+],
+borderWidth: 1
+}]
+},
+options: {
+scales: {
+yAxes: [{
+ticks: {
+beginAtZero: true
+}
+}]
+}
+}
+});
+
+
+new Chart(document.getElementById("horizontalBar"), {
+"type": "horizontalBar",
+"data": {
+"labels": ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Grey"],
+"datasets": [{
+"label": "My First Dataset",
+"data": [22, 33, 55, 12, 86, 23, 14],
+"fill": false,
+"backgroundColor": ["rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)",
+"rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(54, 162, 235, 0.2)",
+"rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"
+],
+"borderColor": ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)",
+"rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"
+],
+"borderWidth": 1
+}]
+},
+"options": {
+"scales": {
+"xAxes": [{
+"ticks": {
+"beginAtZero": true
+}
+}]
+}
+}
+});
+
+
+//pie
+var ctxP = document.getElementById("pieChart").getContext('2d');
+var myPieChart = new Chart(ctxP, {
+type: 'pie',
+data: {
+labels: ["Red", "Green", "Yellow", "Grey", "Dark Grey"],
+datasets: [{
+data: [300, 50, 100, 40, 120],
+backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
+hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
+}]
+},
+options: {
+responsive: true
+},
+fillText: [300, 50, 100, 40, 120]
+});
+
+$(document).ready(function(){
+
+var ctxP = document.getElementById("pieChart").getContext('2d');
+
+var PI2 = Math.PI * 2;
+var myData = [300, 50, 100, 40, 120];
+var cx = 500;
+var cy = 500;
+var radius = 250;
+
+
+function drawWedge(startAngle, endAngle, fill, label) {
+      // draw the wedge
+      ctxP.beginPath();
+      ctxP.moveTo(cx, cy);
+      ctxP.arc(cx, cy, radius, startAngle, endAngle, false);
+      ctxP.closePath();
+      ctxP.fillStyle = fill;
+      ctxP.strokeStyle = 'black';
+      ctxP.fill();
+      ctxP.stroke();
+
+      // draw the label
+      var midAngle = startAngle + (endAngle - startAngle) / 2;
+      var labelRadius = radius * .65;
+      var x = cx + (labelRadius) * Math.cos(midAngle);
+      var y = cy + (labelRadius) * Math.sin(midAngle);
+      ctxP.fillStyle = 'white';
+      ctxP.fillText(label, x, y);
+    }
+
+});
+
+
+window.onload=(function(){
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.lineWidth = 2;
+    ctx.font = '14px verdana';
+
+    var PI2 = Math.PI * 2;
+    var myColor = ["Green", "Red", "Blue"];
+    var myData = [30, 60, 10];
+    var cx = 150;
+    var cy = 150;
+    var radius = 100;
+
+    pieChart(myData, myColor);
+
+    function pieChart(data, colors) {
+      var total = 0;
+      for (var i = 0; i < data.length; i++) {
+        total += data[i];
+      }
+
+      var sweeps = []
+      for (var i = 0; i < data.length; i++) {
+        sweeps.push(data[i] / total * PI2);
+      }
+
+      var accumAngle = 0;
+      for (var i = 0; i < sweeps.length; i++) {
+        drawWedge(accumAngle, accumAngle + sweeps[i], colors[i], data[i]);
+        accumAngle += sweeps[i];
+      }
+    }
+
+    function drawWedge(startAngle, endAngle, fill, label) {
+      // draw the wedge
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, radius, startAngle, endAngle, false);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = 'black';
+      ctx.fill();
+      ctx.stroke();
+
+      // draw the label
+      var midAngle = startAngle + (endAngle - startAngle) / 2;
+      var labelRadius = radius * .65;
+      var x = cx + (labelRadius) * Math.cos(midAngle);
+      var y = cy + (labelRadius) * Math.sin(midAngle);
+      ctx.fillStyle = 'white';
+      ctx.fillText(label, x, y);
+    }
+
+}); // end $(function(){});
+
+
+  </script>
+
+</body>
+</html>

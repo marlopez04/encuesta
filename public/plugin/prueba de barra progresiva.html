@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<body>
+
+<h1>prueba de barra progresiva</h1>
+
+
+<svg width="500" height="40">
+
+	<rect id="1" width="65%" height="20px" x="0" y="0" style="fill:rgb(0,255,0,0.2);stroke-width:1;stroke:rgb(0,255,0);opacity:0.25" />
+	<rect id="2" width="15%" height="20px" x="65%" y="0" style="fill:rgb(255,255,0,0.2);stroke-width:1;stroke:rgb(255,255,0);opacity:0.25" />
+	<rect id="3" width="20%" height="20px" x="80%" y="0" style="fill:rgba(255,0,0, 0.2);stroke-width:1;stroke:rgba(255, 0,0,1);" />
+
+	<text fill="#000000" font-size="12" font-family="Verdana" x="0%" y="35px">0</text>
+	<text fill="#000000" font-size="12" font-family="Verdana" x="20%" y="35px">20</text>
+	<text fill="#000000" font-size="12" font-family="Verdana" x="40%" y="35px">40</text>
+	<text fill="#000000" font-size="12" font-family="Verdana" x="60%" y="35px">60</text>
+	<text fill="#000000" font-size="12" font-family="Verdana" x="80%" y="35px">80</text>
+	<text fill="#000000" font-size="12" font-family="Verdana" x="95%" y="35px">100</text>
+
+</svg>
+			  
+<br>
+<br>
+
+<svg width="500" height="40">
+
+	<rect id="1" width="65%" height="20px" x="0" y="0" style="fill:rgb(0,255,0,0.2);stroke-width:1;stroke:rgb(0,255,0);opacity:0.25" />
+	<rect id="2" width="15%" height="20px" x="65%" y="0" style="fill:rgb(255,255,0,0.2);stroke-width:1;stroke:rgb(255,255,0);opacity:0.25" />
+	<rect id="3" width="20%" height="20px" x="80%" y="0" style="fill:rgba(255,0,0, 0.2);stroke-width:1;stroke:rgba(255, 0,0,1);" />
+
+<!-- Se calcula la ubicacion del texto sumando la posicion anterior mas la mitad del porcentaje a representar -->
+	<text fill="#000000" font-size="12" font-family="Verdana" x="30%" y="15">65%</text>
+	<text fill="#000000" font-size="12" font-family="Verdana" x="70%" y="15">15%</text>
+	<text fill="#000000" font-size="12" font-family="Verdana" x="87%" y="15">40%</text>
+</svg>
+
+
+<script type="text/javascript">
+
+var backgroundColor = ['rgba(54, 162, 235, 0.2)','rgba(255, 206, 86, 0.2)','rgba(75, 192, 192, 0.2)','rgba(153, 102, 255, 0.2)','rgba(255, 159, 64, 0.2)','rgba(255, 99, 132, 0.2)', 'rgba(36, 113, 163, 0.2)','rgba(243, 156, 18, 0.2)','rgba(23, 165, 137, 0.2)',];
+var borderColor = ['rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)','rgba(75, 192, 192, 1)','rgba(153, 102, 255, 1)','rgba(255, 159, 64, 1)','rgba(255,99,132,1)', 'rgba(36, 113, 163, 1)','rgba(243, 156, 18, 1)','rgba(23, 165, 137, 1)',];
+
+/*
+	document.getElementById(1).style.fill = backgroundColor[1];
+	document.getElementById(1).style.stroke = borderColor[1];
+
+	document.getElementById(2).style.fill = backgroundColor[2];
+	document.getElementById(2).style.stroke = borderColor[2];
+
+	document.getElementById(1).style.fill = backgroundColor[4];
+	document.getElementById(1).style.stroke = borderColor[4];
+*/
+
+</script>
+
+
+</body>
+
+</html>
