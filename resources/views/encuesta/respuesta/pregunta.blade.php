@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" >
 
 
   <div class="carousel-inner" role="listbox" style="padding-bottom: 1.5rem;">
@@ -10,10 +10,12 @@
       <div>
 
 
-        <div class="item pregunta active ng-scope col-md-12">
+        <div class="item pregunta active ng-scope col-md">
           @endif
-          <div class="row" style="padding-bottom: 1.5rem;">
-            <p class="ng-binding ">{{$item->numero}} - {{$item->contenido}}</p>
+          <div class="" style="padding-bottom: 1.5rem;">
+            <div class="parrafo">
+              <p class="ng-binding ">{{$item->numero}} - {{$item->contenido}}</p>
+            </div>
           </div>
           @if($item->id == 54)
           <div class="row">
@@ -137,23 +139,24 @@
           @endif
 
           <br>
-          <br>
-          <br>
+
 
         </div>
 
 
 
-        <div class="container-sm text-center">
 
-          <div class="d-flex justify-content-around">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalresp">VER RESPUESTAS</button>
+        <div class=" text-center col-md botonesEncuesta">
 
-            <button type="button" class="btn btn-success" onclick='botonfinalizar()' data-target="#modalalert">ENVIAR ENCUESTA</button>
+          <div class="d-flex justify-content-around row">
+            <button type="button" class="btn btn-primary botonEncuesta" data-toggle="modal"  onclick="abrir()">VER RESPUESTAS</button>
+
+            <button type="button" class="btn btn-success botonEncuesta" onclick='botonfinalizar()' data-target="#modalalert">ENVIAR ENCUESTA</button>
 
           </div>
           <!-- Alerta -->
-          <div class="modal fade" id="modalalert" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+          <div class="modal " id="modalalert" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header alerta">
@@ -167,6 +170,7 @@
           </div>
 
           <!-- Modal -->
+
           <div class="modal fade" id="modalresp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
@@ -180,8 +184,8 @@
                   <div>
                     <ol class="carousel-indicators carousel-indicators-numbers" style="padding-left: initial;margin-top: 10px;">
                       <?php $cantidad = 0; ?>
-
                       @foreach($items as $pregunta)
+
 
                       <?php $pintado = 0  ?>
 
@@ -214,14 +218,12 @@
 
                       @endforeach
 
-                      <br>
-                      <br>
 
                     </ol>
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal" data-backdrop="false">Cerrar</button>
                 </div>
               </div>
             </div>
@@ -245,6 +247,9 @@
 
   </div>
 </div>
+
+
+
 
 <script type="text/javascript">
   $.ajaxSetup({
@@ -312,21 +317,22 @@
 
   };
 
-  function abrirModal() {
+  function abrir() {
+    $('#modalresp').modal('hide');
     $('#modalresp').modal('show');
-  };
+   }
 
 
   function cerrarModal() {
     $('#modalresp').modal('hide');
-    $('body').removeClass('modal-open'); //eliminamos la clase del body para poder hacer scroll
-    $('.fade').remove(); //eliminamos la transicion
-    $('.modal-backdrop').remove(); //eliminamos el backdrop del modal
+    $('body').removeClass('modal-open');
+    $('.fade').remove();
+    // $('.modal-backdrop').remove();
   };
 
   function pregunta(objeto) {
     //controlo si es la pregunta 54
-
+    
     if (preg == 54 && ($(objeto).attr('class') == 'ng-scope' || $(objeto).attr('class') == 'chekeado' || $(objeto).attr('class') == 'uncheked')) {
       console.log('entra por la 54');
 
@@ -399,14 +405,13 @@
           $.post(url, data, function(respondidas) {
             console.log("json ok");
 
-            contestadas = respondidas;
-
             console.log(respondidas);
+
+            contestadas = respondidas;
 
             console.log(contestadas);
 
           });
-
         }
       }
 
@@ -453,11 +458,13 @@
       };
 
       $.get(url, data, function(pregunta) {
-        console.log("json ok");
+					console.log("json ok");
 
-        $('#sector1').hide();
-        $('#sector2').show().fadeOut().html(pregunta).fadeIn();
-      });
+					$('#sector1').html('');
+					
+          $('#sector2').show().fadeOut().html(pregunta).fadeIn();		
+          
+				});
 
     }
   };

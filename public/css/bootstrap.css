@@ -6615,14 +6615,82 @@ button.close {
 }
 }
 
-@media (min-width: 300px) and (max-width: 700px) {
+@media (min-width: 300px) and (max-width: 900px) {
   label {
     display: contents;
   }
   .checkbox label {
     padding-left: 0px;
   }
+  .botonEncuesta {
+    width: 100%;
+    padding: auto;
+    margin-top: 10px;
+  }
+  .col-md-12 {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .col-md-6 {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .col-md-4 {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .col-md-3 {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .col-md-2 {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .pregunta {
+    font-family: 'Roboto', sans-serif;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+    text-align: center !important;
+  }
+  .parrafo {
+    font-family: 'Roboto', sans-serif;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    text-align: center !important;
+    font-size: 14px !important;
+  }
+  .parrafo {
+    border: 1px solid #ccc;
+    border-bottom-left-radius: 10rem;
+    border-bottom-right-radius: 10rem;
+    border-top: none;
 
+    color: #fff;
+  background-image: linear-gradient(rgba(38, 168, 95), rgba(62, 143, 62));
+  background-repeat: repeat-x;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 5%), 0 1px 0 rgb(255 255 255 / 10%);
+  }
+}
+@media (min-width: 1000px) and (max-width: 2560px) {
+  .botonesEncuesta {
+    padding-top: 30rem;
+  }
+}
+
+
+.parrafo {
+  border: 1px solid #ccc;
+  border-bottom-left-radius: 10rem;
+  border-bottom-right-radius: 10rem;
+  border-top: none;
+
+  color: #fff;
+background-image: linear-gradient(rgba(38, 168, 95), rgba(62, 143, 62));
+background-repeat: repeat-x;
+box-shadow: inset 0 1px 3px rgb(0 0 0 / 5%), 0 1px 0 rgb(255 255 255 / 10%);
 }
 
 .modal-body {
@@ -6642,4 +6710,16 @@ button.close {
   border-color: hsla(341, 94%, 49%, 1);
   box-shadow: inset 0 1px 3px rgb(0 0 0 / 5%), 0 1px 0 rgb(255 255 255 / 10%);
   border-radius: 3px;
+}
+.pregunta {
+  font-family: 'Roboto', sans-serif;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 0px !important; 
+  padding-bottom: 2rem;
+  text-align: center;
+  font-size: 30px;
+}
+body.modal-open {
+  overflow: visible !important;
 }
