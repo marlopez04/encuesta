@@ -40,7 +40,7 @@
 			<h4>Contrato</h4>
 			{!! Form::select('contrato_id', $contratos, null, [ 'class' => 'form-control select-category', 'required']) !!}
 		</div>
-		<div class="form-group" style="width: 100%;">
+		<div class="form-group" >
 			{!!	Form::submit('Registrar',['class' =>'btn btn-primary']) !!}
 		</div>
 	{!!Form::close()!!}
