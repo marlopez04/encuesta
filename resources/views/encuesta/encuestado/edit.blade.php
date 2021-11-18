@@ -41,7 +41,7 @@
 			{!! Form::select('contrato_id', $contratos, $encuestado->contrato_id, [ 'class' => 'form-control select-category', 'required']) !!}
 		</div>
 		<div class="form-group">
-			{!!	Form::submit('Registrar',['class' =>'btn btn-primary']) !!}
+			{!!	Form::submit('Registrar',['class' =>'btn btn-primary btnform']) !!}
 		</div>
 	{!!Form::close()!!}
 	</div>
