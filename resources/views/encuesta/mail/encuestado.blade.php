@@ -76,7 +76,7 @@
     <p>
     
     <a href="{{$direccion}}">
-        <img src="https://cofaral.s3.us-east-2.amazonaws.com/prod/images/web/encuesta2020.jpg">   
+        <img src="https://cofaral.s3.us-east-2.amazonaws.com/qa/images/Encuesta-2021.jpg">   
     </a>
 <!--
     <img src="https://cofaral.s3.us-east-2.amazonaws.com/prod/images/web/ULTIMO+DIA.PNG">
