@@ -67,13 +67,8 @@
     <div class="container">
       <div class="navbar-header">
         <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">-->
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="TITULO">
+
+        <a class="navbar-brand" href="">
           <img alt="Cofaral Encuestas" src="{{asset('images/iconMenu.png')}}" style="width: 40px; margin-top: -5px;">
           <a class="navbar-brand fuente fuente25" href="">Cofaral</a>
         </a>

@@ -3090,7 +3090,7 @@ fieldset[disabled] .btn-default.active {
   background-color: #337ab7;
   border-color: #2e6da4;
 }
-.btn-primary{
+.btnform{
   width: 100% !important;
 }
 .btn-primary:hover,
@@ -6618,7 +6618,7 @@ button.close {
 }
 }
 
-@media (min-width: 300px) and (max-width: 900px) {
+@media (min-width: 300px) and (max-width: 780px) {
   label {
     display: contents;
   }
